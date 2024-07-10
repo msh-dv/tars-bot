@@ -5,9 +5,16 @@ module.exports = {
     .setName("server")
     .setDescription("Muestra informacion sobre el servidor."),
   async execute(interaction) {
-    // interaction.guild is the object representing the Guild in which the command was run
+    const i = interaction.guild;
     await interaction.reply(
-      `Este servidor es ${interaction.guild.name} y tiene ${interaction.guild.memberCount} miembros.`
+      `## ${i.name} (${i.id})
+
+      **Usuarios: ${i.memberCount}**
+      **Creado en: ${i.createdAt}**
+      **Id del creador: ${i.ownerId}**
+      **Boosts: ${i.premiumSubscriptionCount}**
+
+      `
     );
   },
 };

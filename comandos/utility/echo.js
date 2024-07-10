@@ -2,10 +2,16 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("hi")
-    .setDescription("Saluda.:)"),
+    .setName("echo")
+    .setDescription("Repite lo que le digas")
+    .addStringOption((option) =>
+      option
+        .setName('mensaje')
+        .setDescription('Mensaje a repetir.')
+        .setRequired(true)
+    ),
   async execute(interaction) {
-    await interaction.reply(`Hola, ${interaction.user.username}! ;)`);
+    const mensaje = interaction.options.getString('mensaje')
+    await interaction.reply(`${mensaje}`);
   },
 };
-
