@@ -9,10 +9,10 @@ module.exports = {
     await interaction.reply(
       `## ${i.name} (${i.id})
 
-      **Usuarios: ${i.memberCount}**
-      **Creado en: ${i.createdAt}**
-      **Id del creador: ${i.ownerId}**
-      **Boosts: ${i.premiumSubscriptionCount}**
+      Usuarios: ${i.memberCount}
+      Creado desde: ${i.createdAt}
+      Id del creador: ${i.ownerId}
+      Boosts: ${i.premiumSubscriptionCount}
 
       `
     );

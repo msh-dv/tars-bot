@@ -9,7 +9,7 @@ module.exports = {
 
     if (!command) {
       console.error(
-        `No command matching ${interaction.commandName} was found.`
+        `Ningun comando ${interaction.commandName} fue encontrado.`
       );
       return;
     }
@@ -20,12 +20,12 @@ module.exports = {
       console.error(error);
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
-          content: "There was an error while executing this command!",
+          content: "Hubo un error ejecutando este comando!",
           ephemeral: true,
         });
       } else {
         await interaction.reply({
-          content: "There was an error while executing this command!",
+          content: "Hubo un error ejecutando este comando!",
           ephemeral: true,
         });
       }

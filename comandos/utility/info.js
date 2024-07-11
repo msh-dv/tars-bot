@@ -15,7 +15,7 @@ module.exports = {
       Nombre: ${interaction.user.username}
       Apodo: ${interaction.member.nickname}
       Roles: ${roles}
-      Creado en: ${interaction.user.createdAt}`,
+      Creado desde: ${interaction.user.createdAt}`,
 
       ephemeral: true,
     });
