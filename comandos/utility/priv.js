@@ -6,16 +6,16 @@ const openai = new OpenAI();
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("chat")
-    .setDescription("Envia un mensaje a ChatGPT4")
+    .setName("priv")
+    .setDescription("Envia un mensaje privado a ChatGPT4")
     .addStringOption((option) =>
       option
         .setName("mensaje")
-        .setDescription("Mensaje enviar.")
+        .setDescription("Mensaje a responder.")
         .setRequired(true)
     ),
   async execute(interaction) {
-    interaction.deferReply();
+    interaction.deferReply({ ephemeral: true });
     const mensaje = interaction.options.getString("mensaje");
 
     const stream = await openai.beta.chat.completions.stream({
