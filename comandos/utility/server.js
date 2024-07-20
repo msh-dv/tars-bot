@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -6,28 +7,8 @@ module.exports = {
     .setDescription("Muestra informacion sobre el servidor."),
   async execute(interaction) {
     const i = interaction.guild;
-    await interaction.reply(
-      `## ${i.name} (${i.id})
 
-      Usuarios: ${i.memberCount}
-      Creado desde: ${i.createdAt}
-      Id del creador: ${i.ownerId}
-      Boosts: ${i.premiumSubscriptionCount}
-
-      `
-    );
-  },
-};
-
-const { SlashCommandBuilder, codeBlock, bold } = require("discord.js");
-const { EmbedBuilder } = require("discord.js");
-
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("help")
-    .setDescription("Muestra informacion de ayuda."),
-  async execute(interaction) {
-    const exampleEmbed = new EmbedBuilder()
+    const serverInfo = new EmbedBuilder()
       .setColor("White")
       .setTitle(`${i.name} (${i.id})`)
       .setDescription(bold("Información del servidor:"))
@@ -36,27 +17,24 @@ module.exports = {
       )
       .addFields(
         {
-	  name: bold("Usuarios:"),
+          name: bold("Usuarios:"),
           value: `${i.memberCount}`,
         },
         {
-	  name: bold("Creado desde:"),
-          value: "Envia un mensaje privado a ChatGPT.",
+          name: bold("Creado desde:"),
+          value: `${i.createdAt}`,
         },
         {
-          name: bold("/server"),
-          value: "Muestra información del servidor.",
+          name: bold("ID del servidor:"),
+          value: `${i.ownerId}`,
         },
         {
-          name: bold("/info"),
-          value: codeBlock("Muestra información del usuario."),
-        },
-        { name: bold("/hi"), value: codeBlock("Responde con un Hola!") },
-        { name: bold("/echo"), value: codeBlock("Repite lo que le digas.") },
-        { name: bold("/ping"), value: codeBlock("Responde con un Pong!") }
+          name: bold("Boosts:"),
+          value: codeBlock(`${i.premiumSubscriptionCount}`),
+        }
       )
       .setTimestamp();
 
-    await interaction.reply({ embeds: [exampleEmbed] });
+    await interaction.reply({ embeds: [serverInfo] });
   },
 };
