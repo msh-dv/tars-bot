@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, bold } = require("discord.js");
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
@@ -10,12 +10,14 @@ module.exports = {
 
     const serverInfo = new EmbedBuilder()
       .setColor("White")
-      .setTitle(`${i.name} (${i.id})`)
+      .setTitle(`${i.name}`)
       .setDescription(bold("Información del servidor:"))
-      .setThumbnail(
-        "https://msh-dv.github.io/tars-website/images/tars-profile.png"
-      )
+      .setThumbnail(i.iconURL())
       .addFields(
+        {
+          name: bold("ID"),
+          value: `${i.id}`,
+        },
         {
           name: bold("Usuarios:"),
           value: `${i.memberCount}`,
@@ -25,12 +27,12 @@ module.exports = {
           value: `${i.createdAt}`,
         },
         {
-          name: bold("ID del servidor:"),
+          name: bold("ID del creador:"),
           value: `${i.ownerId}`,
         },
         {
           name: bold("Boosts:"),
-          value: codeBlock(`${i.premiumSubscriptionCount}`),
+          value: `${i.premiumSubscriptionCount}`,
         }
       )
       .setTimestamp();
