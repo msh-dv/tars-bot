@@ -36,9 +36,9 @@ module.exports = {
     await interaction.editReply(`${finalMessage}`);
     //Logs de las interacciones
     console.log(
-      `Public: ${inte.user.username}:${mensaje} at ${inte.createdTimestamp}
-      ${finalMessage}
-      `
+      `\x1b[1;32]Public: \x1b[1;34${inte.user.username}\x1b[0m at ${inte.createdAt}
+      Message: ${mensaje}
+      Respones: ${finalMessage} `
     );
   },
 };
