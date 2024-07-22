@@ -36,7 +36,7 @@ module.exports = {
     await interaction.editReply(`${finalMessage}`);
     //Logs de las interacciones
     console.log(
-      `\x1b[1;32]Public: \x1b[1;34${inte.user.username}\x1b[0m at ${inte.createdAt}
+      `\x1b[1;32mPublic: \x1b[1;34m${inte.user.username}\x1b[0m at ${inte.createdAt}\x1b[0m
       Message: ${mensaje}
       Respones: ${finalMessage} `
     );
