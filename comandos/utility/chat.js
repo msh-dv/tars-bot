@@ -15,6 +15,7 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
+    const inte = interaction;
     interaction.deferReply();
     const mensaje = interaction.options.getString("mensaje");
 
@@ -24,7 +25,7 @@ module.exports = {
       stream: true,
     });
 
-    console.log("Nueva instancia de IA creada");
+    console.log(`${inte.user.username}:${mensaje} at ${inte.createdTimestamp}`);
     const chatCompletion = await stream.finalChatCompletion();
     await interaction.editReply(`${chatCompletion.choices[0].message.content}`);
   },
