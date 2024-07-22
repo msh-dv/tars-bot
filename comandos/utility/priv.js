@@ -7,11 +7,11 @@ const openai = new OpenAI();
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("priv")
-    .setDescription("Envia un mensaje privado a ChatGPT4")
+    .setDescription("Envia un mensaje privado a ChatGPT")
     .addStringOption((option) =>
       option
         .setName("mensaje")
-        .setDescription("Mensaje a responder.")
+        .setDescription("Mensaje a enviar.")
         .setRequired(true)
     ),
   async execute(interaction) {
@@ -26,6 +26,10 @@ module.exports = {
 
     console.log("Nueva instancia de IA creada");
     const chatCompletion = await stream.finalChatCompletion();
-    await interaction.editReply(`${chatCompletion.choices[0].message.content}`);
+    const finalMessage = chatCompletion.choices[0].message.content;
+    await interaction.editReply(`${finalMessage}`);
+    console.log(
+      `Private: ${inte.user.username} at ${inte.createdTimestamp}`
+    );
   },
 };

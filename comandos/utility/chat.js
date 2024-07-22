@@ -5,28 +5,40 @@ require("dotenv").config();
 const openai = new OpenAI();
 
 module.exports = {
+  //Creamos un comando de slash "/"
   data: new SlashCommandBuilder()
     .setName("chat")
-    .setDescription("Envia un mensaje a ChatGPT4")
+    .setDescription("Envia un mensaje a ChatGPT")
     .addStringOption((option) =>
       option
+        //Pedimos un mensaje al usuario
         .setName("mensaje")
-        .setDescription("Mensaje enviar.")
+        .setDescription("Mensaje a enviar.")
         .setRequired(true)
     ),
   async execute(interaction) {
+    //Ejecutamos la respuesta al mensaje dado
     const inte = interaction;
+    //Añadimos deferReply para evitar que la API marque un error por timeout
     interaction.deferReply();
     const mensaje = interaction.options.getString("mensaje");
 
     const stream = await openai.beta.chat.completions.stream({
+      //Agregamos la informacion para hacer la peticion a la API de OpenAI
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: mensaje }],
       stream: true,
     });
-
-    console.log(`${inte.user.username}:${mensaje} at ${inte.createdTimestamp}`);
+    //Creamos una variable para almacenar la respuesta completa
     const chatCompletion = await stream.finalChatCompletion();
-    await interaction.editReply(`${chatCompletion.choices[0].message.content}`);
+    const finalMessage = chatCompletion.choices[0].message.content;
+    //Redirigimos la respuesta y la editamos para añadir nuestra respuesta
+    await interaction.editReply(`${finalMessage}`);
+    //Logs de las interacciones
+    console.log(
+      `Public: ${inte.user.username}:${mensaje} at ${inte.createdTimestamp}
+      ${finalMessage}
+      `
+    );
   },
 };
