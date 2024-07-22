@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, bold } = require("discord.js");
+const { SlashCommandBuilder, bold, codeBlock } = require("discord.js");
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
@@ -16,10 +16,9 @@ module.exports = {
       .addFields(
         {
           name: bold("Modelos de texto:"),
-          value: codeBlock("gpt-3.5-turbo"),
-          value: codeBlock("gpt-4-turbo"),
-          value: codeBlock("gpt-4o"),
-          value: codeBlock("gpt-4o-mini	"),
+          value: codeBlock(
+            "gpt-3.5-turbo\ngpt-4-turbo (Proximamente)\ngpt-4o (Proximamente)\ngpt-4o-mini (Proximamente)"
+          ),
         },
         {
           name: bold("Modelos de imagen:"),
