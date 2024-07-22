@@ -23,12 +23,20 @@ module.exports = {
           value: codeBlock("Envia un mensaje privado a ChatGPT."),
         },
         {
+          name: bold("/modelos"),
+          value: codeBlock("Muestra los modelos disponibles."),
+        },
+        {
           name: bold("/server"),
           value: codeBlock("Muestra información del servidor."),
         },
         {
           name: bold("/info"),
           value: codeBlock("Muestra información del usuario."),
+        },
+        {
+          name: bold("/invite"),
+          value: codeBlock("Link de invitacion para el bot."),
         },
         { name: bold("/hi"), value: codeBlock("Responde con un Hola!") },
         { name: bold("/echo"), value: codeBlock("Repite lo que le digas.") },

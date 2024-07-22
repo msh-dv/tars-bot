@@ -1,8 +1,8 @@
 const { REST, Routes } = require("discord.js");
-const { clientId, guildId } = require("./package.json");
+const { clientId } = require("./package.json");
 const fs = require("node:fs");
 const path = require("node:path");
-require('dotenv').config();
+require("dotenv").config();
 
 const commands = [];
 const foldersPath = path.join(__dirname, "comandos");
@@ -34,15 +34,10 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
       `Started refreshing ${commands.length} application (/) commands.`
     );
 
-    for (const guild of guildId) {
-      const data = await rest.put(
-        Routes.applicationGuildCommands(clientId, guild),
-        { body: commands }
-      );
-      console.log(
-        `Successfully reloaded ${data.length} application (/) commands for guild ${guild}.`
-      );
-    }
+    const data = await rest.put(Routes.applicationCommands(clientId), {
+      body: commands,
+    });
+    console.log(`Successfully reloaded ${data.length}.`);
   } catch (error) {
     console.error(error);
   }
