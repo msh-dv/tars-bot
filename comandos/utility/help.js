@@ -11,7 +11,7 @@ module.exports = {
       .setTitle("Comandos")
       .setDescription(bold("Información sobre comandos:"))
       .setThumbnail(
-        "https://msh-dv.github.io/tars-website/images/tars-profile.png"
+        "https://msh-dv.github.io/tars-website/images/profile-picture.png"
       )
       .addFields(
         {
