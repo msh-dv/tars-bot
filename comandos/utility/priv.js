@@ -16,6 +16,7 @@ module.exports = {
     ),
   async execute(interaction) {
     interaction.deferReply({ ephemeral: true });
+    const inte = interaction;
     const mensaje = interaction.options.getString("mensaje");
 
     const stream = await openai.beta.chat.completions.stream({
