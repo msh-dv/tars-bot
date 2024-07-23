@@ -2,7 +2,9 @@ const OpenAI = require("openai");
 const { SlashCommandBuilder } = require("discord.js");
 require("dotenv").config();
 
-const openai = new OpenAI();
+const openai = new OpenAI({
+  apiKey: process.env[OPENAI_API_KEY],
+});
 
 module.exports = {
   //Creamos un comando de slash "/"
@@ -24,10 +26,20 @@ module.exports = {
     interaction.deferReply();
     const mensaje = interaction.options.getString("mensaje");
 
+    //instrucciones predeterminadas
+    const instrucciones = `
+    Instrucciones:
+    Eres TARS un bot de discord que usa la API de OpenAI para dar respuestas generadas con IA.
+    Longitud de respuestas: medias.
+    Tipo de respuestas: formales, detalladas.
+
+    A continuacion, responde al mensaje del usuario:
+    `;
+
     const stream = await openai.beta.chat.completions.stream({
       //Agregamos la informacion para hacer la peticion a la API de OpenAI
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: mensaje }],
+      messages: [{ role: "user", content: instrucciones + mensaje }],
       stream: true,
     });
     //Creamos una variable para almacenar la respuesta completa
@@ -39,7 +51,7 @@ module.exports = {
     console.log(
       `\x1b[1;32mPublic: \x1b[1;34m${inte.user.username}\x1b[0m at ${inte.createdAt}\x1b[0m
       Message: ${mensaje}
-      Respones: ${finalMessage} `
+      Response: ${finalMessage} `
     );
   },
 };

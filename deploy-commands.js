@@ -37,6 +37,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
     const data = await rest.put(Routes.applicationCommands(clientId), {
       body: commands,
     });
+
     console.log(`Successfully reloaded ${data.length}.`);
   } catch (error) {
     console.error(error);
