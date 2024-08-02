@@ -15,6 +15,10 @@ module.exports = {
       )
       .addFields(
         {
+          name: bold("/help"),
+          value: codeBlock("Muestra este mensaje de ayuda."),
+        },
+        {
           name: bold("/chat"),
           value: codeBlock("Envia un mensaje a ChatGPT."),
         },
