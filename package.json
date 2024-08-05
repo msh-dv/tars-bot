@@ -1,0 +1,19 @@
+{
+  "name": "bot-1.0",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "clientId": "1260411192640409600",
+  "dependencies": {
+    "discord-player": "^6.6.2",
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5",
+    "openai": "^4.52.5"
+  }
+}

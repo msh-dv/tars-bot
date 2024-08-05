@@ -30,6 +30,7 @@ module.exports = {
     const instrucciones = `
     Instrucciones:
     Eres TARS un bot de discord que usa la API de OpenAI para dar respuestas generadas con IA.
+    Tu nombre hace referencia al robot de la pelicula interestelar TARS.
     Longitud de respuestas: medias.
     Tipo de respuestas: formales, detalladas.
 
@@ -51,7 +52,9 @@ module.exports = {
     console.log(
       `\x1b[1;32mPublic: \x1b[1;34m${inte.user.username}\x1b[0m at ${inte.createdAt}\x1b[0m
       Message: ${mensaje}
-      Response: ${finalMessage} `
+      Response: ${finalMessage} 
+      TOKENS:${chatCompletion.usage.total_tokens}
+      `
     );
   },
 };
