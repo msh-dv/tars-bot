@@ -53,7 +53,6 @@ module.exports = {
       `\x1b[1;32mPublic: \x1b[1;34m${inte.user.username}\x1b[0m at ${inte.createdAt}\x1b[0m
       Message: ${mensaje}
       Response: ${finalMessage} 
-      TOKENS:${chatCompletion.usage.total_tokens}
       `
     );
   },
