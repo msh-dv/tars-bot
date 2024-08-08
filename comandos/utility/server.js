@@ -6,33 +6,36 @@ module.exports = {
     .setName("server")
     .setDescription("Muestra informacion sobre el servidor."),
   async execute(interaction) {
-    const i = interaction.guild;
+    const inter = interaction.guild;
+
+    //Actualiza la informacion del servidor 
+    await inter.fetch();
 
     const serverInfo = new EmbedBuilder()
       .setColor("White")
-      .setTitle(`${i.name}`)
+      .setTitle(`${inter.name}`)
       .setDescription(bold("Información del servidor:"))
-      .setThumbnail(i.iconURL())
+      .setThumbnail(inter.iconURL())
       .addFields(
         {
           name: bold("ID"),
-          value: `${i.id}`,
+          value: `${inter.id}`,
         },
         {
           name: bold("Usuarios:"),
-          value: `${i.memberCount}`,
+          value: `${inter.memberCount}`,
         },
         {
           name: bold("Creado desde:"),
-          value: `${i.createdAt}`,
+          value: `${inter.createdAt}`,
         },
         {
           name: bold("ID del creador:"),
-          value: `${i.ownerId}`,
+          value: `${inter.ownerId}`,
         },
         {
           name: bold("Boosts:"),
-          value: `${i.premiumSubscriptionCount}`,
+          value: `${inter.premiumSubscriptionCount}`,
         }
       )
       .setTimestamp();

@@ -1,12 +1,12 @@
 {
   "name": "bot-1.0",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node main.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "msh",
   "license": "ISC",
   "description": "",
   "clientId": "1260411192640409600",
