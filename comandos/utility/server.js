@@ -8,9 +8,6 @@ module.exports = {
   async execute(interaction) {
     const inter = interaction.guild;
 
-    //Actualiza la informacion del servidor 
-    await inter.fetch();
-
     const serverInfo = new EmbedBuilder()
       .setColor("White")
       .setTitle(`${inter.name}`)
