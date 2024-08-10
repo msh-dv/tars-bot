@@ -34,6 +34,7 @@ module.exports = {
     Nombre del usuario:${inte.member.nickname}.
     Longitud de respuestas: medias.
     Tipo de respuestas: formales, detalladas.
+    Idioma de la respuesta: El mismo que el mensaje del usuario.
 
     A continuacion, responde al mensaje del usuario:
     `;
