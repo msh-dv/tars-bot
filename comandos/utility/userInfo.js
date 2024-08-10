@@ -12,7 +12,7 @@ module.exports = {
 
     const userInfo = new EmbedBuilder()
       .setColor("White")
-      .setTitle(`${member.nickname} (${i.username})`)
+      .setTitle(`${member.displayName} (${i.username})`)
       .setDescription("Información del usuario:")
       .setThumbnail(i.avatarURL())
       .addFields(

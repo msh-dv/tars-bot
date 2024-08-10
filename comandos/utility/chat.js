@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require("discord.js");
 require("dotenv").config();
 
 const openai = new OpenAI({
-  apiKey: process.env['OPENAI_API_KEY'],
+  apiKey: process.env["OPENAI_API_KEY"],
 });
 
 module.exports = {
@@ -32,7 +32,7 @@ module.exports = {
     Eres TARS un bot de discord que usa la API de OpenAI para dar respuestas generadas con IA.
     Tu nombre hace referencia al robot de la pelicula interestelar TARS.
     Idioma de la respuesta: El mismo que el mensaje del usuario.
-    Nombre del usuario:${inte.member.nickname}.
+    Nombre del usuario:${inte.member.displayName}.
     Longitud de respuestas: medias.
     Tipo de respuestas: formales, detalladas.
 
