@@ -32,7 +32,7 @@ module.exports = {
     const mensaje = interaction.options.getString("mensaje");
 
     const stream = await openai.beta.chat.completions.stream({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: instrucciones + mensaje }],
       stream: true,
     });

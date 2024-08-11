@@ -41,7 +41,7 @@ module.exports = {
 
     const stream = await openai.beta.chat.completions.stream({
       //Agregamos la informacion para hacer la peticion a la API de OpenAI
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: instrucciones + mensaje }],
       stream: true,
     });
