@@ -41,9 +41,7 @@ module.exports = {
     const finalMessage = chatCompletion.choices[0].message.content;
     await interaction.editReply(`${finalMessage}`);
     console.log(
-      `\x1b[1;31mPrivate: \x1b[1;34m${inte.user.username}\x1b[0m at ${inte.createdAt}\x1b[0m
-      Message: ${mensaje}
-      Response: ${finalMessage} `
+      `\x1b[1;31mPrivate: \x1b[1;34m${inte.user.username}\x1b[0m at ${inte.createdAt}\x1b[0m`
     );
   },
 };
