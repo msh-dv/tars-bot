@@ -16,32 +16,49 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    interaction.deferReply({ ephemeral: true });
+    //Ejecutamos la respuesta al mensaje dado
     const inte = interaction;
-
-    const instrucciones = `
-    Instrucciones:
-    Eres TARS un bot de discord que usa la API de OpenAI para dar respuestas generadas con IA.
-    Tu nombre hace referencia al robot de la pelicula interestelar TARS.
-    Nombre del usuario:${inte.member.nickname}.
-    Longitud de respuestas: medias.
-    Tipo de respuestas: formales, detalladas.
-
-    A continuacion, responde al mensaje del usuario:
-    `;
+    //Añadimos deferReply para evitar que la API marque un error por timeout
+    interaction.deferReply({ ephemeral: true });
     const mensaje = interaction.options.getString("mensaje");
 
-    const stream = await openai.beta.chat.completions.stream({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: instrucciones + mensaje }],
-      stream: true,
-    });
+    //instrucciones predeterminadas
+    const instrucciones = `Eres TARS, un bot de discord que usa los modelos de OpenAI para dar respuestas creativas y detalladas de cualquier tema. The user's language should be the same as the language of the user's input. Recuerda saludar con el nombre del usuario, el cual es ${inte.member.displayName}.`;
 
-    const chatCompletion = await stream.finalChatCompletion();
-    const finalMessage = chatCompletion.choices[0].message.content;
-    await interaction.editReply(`${finalMessage}`);
+    const completion = await openai.chat.completions.create({
+      //Agregamos la informacion para hacer la peticion a la API de OpenAI
+      messages: [
+        {
+          role: "system",
+          content: instrucciones.trim(),
+        },
+        { role: "user", content: mensaje },
+      ],
+      model: "gpt-4o-mini",
+      max_tokens: 600,
+    });
+    //Creamos una variable para almacenar la respuesta completa
+    const chatCompletion = completion.choices[0].message.content;
+
+    try {
+      if (chatCompletion.length > 2000) {
+        const firstPart = chatCompletion.substring(0, 2000);
+        const secondPart = chatCompletion.substring(2000);
+        await interaction.editReply(`${firstPart}`);
+        await interaction.followUp(`${secondPart}`);
+      } else {
+        await interaction.editReply(`${chatCompletion}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    //Logs de las interacciones
     console.log(
-      `\x1b[1;31mPrivate: \x1b[1;34m${inte.user.username}\x1b[0m at ${inte.createdAt}\x1b[0m`
+      `Private: ${inte.user.username} at ${inte.createdAt}
+      Response.length = ${chatCompletion.length}
+      Tokens: ${completion.usage.total_tokens}
+      `
     );
   },
 };

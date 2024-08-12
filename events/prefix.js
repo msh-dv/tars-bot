@@ -9,15 +9,7 @@ const instrucciones = `Eres TARS, un bot de discord que usa los modelos de OpenA
 
 const model = "gpt-4o-mini";
 
-const history = [{ role: "system", content: instrucciones.trim() }];
-
-console.log(history.length);
-
-if (history.length > 20) {
-  console.log("Reset history");
-  console.log(history.length);
-  history = [{ role: "system", content: instrucciones.trim() }];
-}
+let history = [{ role: "system", content: instrucciones.trim() }];
 
 const prefix = "ts ";
 
@@ -65,5 +57,21 @@ module.exports = {
     } else {
       message.channel.send(chatCompletion).catch(console.error);
     }
+
+    console.log(history.length);
+
+    if (history.length > 120) {
+      console.log("Reset history");
+      console.log(history.length);
+      history = [{ role: "system", content: instrucciones.trim() }];
+    }
+
+    console.log(
+      `Public: ${username} at ${message.createdAt}
+      Message: ${content}
+      Response: ${chatCompletion}, Response.length = ${chatCompletion.length}
+      Tokens: ${completion.usage.total_tokens}
+      `
+    );
   },
 };
