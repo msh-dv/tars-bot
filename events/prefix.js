@@ -17,14 +17,12 @@ module.exports = {
   name: "messageCreate",
   once: false,
   async execute(message) {
-    const msgUsername = message.member.displayName;
-
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const content = message.content.slice(prefix.length).trim();
 
-    if (message.length == 0) {
-      return message.channel.send("Por favor, proporciona una pregunta.");
-    }
+    let msgUsername = message.member.displayName;
+
+    if (!msgUsername) msgUsername = "usuario";
 
     history.push(
       {
