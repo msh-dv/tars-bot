@@ -60,8 +60,8 @@ module.exports = {
 
     console.log(history.length);
 
-    if (history.length > 120) {
-      console.log("Reset history");
+    if (history.length > 30) {
+      console.log("Restoring history");
       console.log(history.length);
       history = [{ role: "system", content: instrucciones.trim() }];
     }
