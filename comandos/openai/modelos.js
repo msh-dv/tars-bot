@@ -17,7 +17,7 @@ module.exports = {
         {
           name: bold("Modelos de texto:"),
           value: codeBlock(
-            "gpt-3.5-turbo\ngpt-4-turbo (Proximamente)\ngpt-4o (Proximamente)\ngpt-4o-mini (Proximamente)"
+            "gpt-4o-mini(actual)\ngpt-3.5-turbo\ngpt-4-turbo\ngpt-4o"
           ),
         },
         {
