@@ -17,7 +17,7 @@ module.exports = {
   name: "messageCreate",
   once: false,
   async execute(message) {
-    const username = message.author.displayName;
+    const msgUsername = message.author.displayName;
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const content = message.content.slice(prefix.length).trim();
@@ -29,7 +29,7 @@ module.exports = {
     history.push(
       {
         role: "system",
-        content: `Recuerda que el nombre de usuario es ${username}`,
+        content: `Recuerda que el nombre de usuario es ${msgUsername}`,
       },
       { role: "user", content: content }
     );
