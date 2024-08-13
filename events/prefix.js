@@ -17,7 +17,7 @@ module.exports = {
   name: "messageCreate",
   once: false,
   async execute(message) {
-    const msgUsername = message.author.displayName;
+    const msgUsername = message.member.displayName;
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const content = message.content.slice(prefix.length).trim();
