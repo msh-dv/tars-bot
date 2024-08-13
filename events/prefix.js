@@ -67,7 +67,7 @@ module.exports = {
     }
 
     console.log(
-      `Public: ${username} at ${message.createdAt}
+      `Public: ${msgUsername} at ${message.createdAt}
       Message: ${content}
       Response: ${chatCompletion}, Response.length = ${chatCompletion.length}
       Tokens: ${completion.usage.total_tokens}
