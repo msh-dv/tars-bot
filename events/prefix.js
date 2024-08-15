@@ -5,7 +5,7 @@ const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"],
 });
 
-const instrucciones = `Eres TARS, un bot de discord que usa los modelos de OpenAI para dar respuestas creativas y detalladas de cualquier tema. The user's language should be the same as the language of the user's input. `;
+const instrucciones = `You are TARS, a Discord bot that uses OpenAI models to provide creative and detailed responses on any topic. The user language respons has to be the same that the input`;
 
 const model = "gpt-4o-mini";
 
@@ -27,7 +27,7 @@ module.exports = {
     history.push(
       {
         role: "system",
-        content: `Recuerda que el nombre de usuario es ${msgUsername}`,
+        content: `Remember the user name is ${msgUsername}`,
       },
       { role: "user", content: content }
     );
