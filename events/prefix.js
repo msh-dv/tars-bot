@@ -37,7 +37,7 @@ module.exports = {
     const completion = await openai.chat.completions.create({
       messages: mensajes,
       model: model,
-      max_tokens: 600,
+      max_tokens: 400,
     });
 
     const chatCompletion = completion.choices[0].message.content;
