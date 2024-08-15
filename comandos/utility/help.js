@@ -9,6 +9,11 @@ module.exports = {
     const exampleEmbed = new EmbedBuilder()
       .setColor("White")
       .setTitle("Comandos")
+      .setAuthor({
+        name: "msh-dv",
+        iconURL: "https://avatars.githubusercontent.com/u/113065583?v=4",
+        url: "https://github.com/msh-dv",
+      })
       .setDescription(bold("Información sobre comandos:"))
       .setThumbnail(
         "https://msh-dv.github.io/tars-website/images/profile-picture.png"
