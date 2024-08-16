@@ -22,12 +22,12 @@ module.exports = {
 
     let msgUsername = message.member.displayName;
 
-    if (!msgUsername) msgUsername = "usuario";
+    if (!msgUsername) msgUsername = "user";
 
     history.push(
       {
         role: "system",
-        content: `Remember the user name is ${msgUsername}`,
+        content: `The user name is ${msgUsername}`,
       },
       { role: "user", content: content }
     );
