@@ -20,6 +20,11 @@ module.exports = {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const content = message.content.slice(prefix.length).trim();
 
+    if (tieneBads(content))
+      return message.channel
+        .send(`Este mensaje infringe nuestras politicas`)
+        .catch(console.error);
+
     let msgUsername = message.member.displayName;
 
     if (!msgUsername) msgUsername = "user";
@@ -60,7 +65,6 @@ module.exports = {
 
     if (history.length > 30) {
       console.log("Restoring history");
-      console.log(history.length);
       history = [{ role: "system", content: instrucciones.trim() }];
     }
 
