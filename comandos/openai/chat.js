@@ -27,7 +27,7 @@ module.exports = {
     const mensaje = interaction.options.getString("mensaje");
 
     //instrucciones predeterminadas
-    const instrucciones = `You are TARS, a Discord bot that uses OpenAI models to provide creative and detailed responses on any topic. The user language respons has to be the same that the input`;
+    const instrucciones = `You are TAIRS, a Discord bot that uses OpenAI models to provide creative and detailed responses on any topic. The user language respons has to be the same that the input`;
 
     const completion = await openai.chat.completions.create({
       //Agregamos la informacion para hacer la peticion a la API de OpenAI

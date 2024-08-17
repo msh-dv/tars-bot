@@ -50,4 +50,9 @@ for (const file of eventFiles) {
   }
 }
 
-client.login(process.env.DISCORD_TOKEN);
+const token =
+  process.env.ENV === "exp"
+    ? process.env.DISCORD_EXPERIMENTAL_TOKEN
+    : process.env.DISCORD_TOKEN;
+
+client.login(token);
