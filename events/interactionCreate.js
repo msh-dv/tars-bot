@@ -20,12 +20,12 @@ module.exports = {
       console.error(error);
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
-          content: "Hubo un error ejecutando este comando!",
+          content: `Hubo un error ejecutando este comando! ${interaction.commandName}`,
           ephemeral: true,
         });
       } else {
         await interaction.reply({
-          content: "Hubo un error ejecutando este comando!",
+          content: `Hubo un error ejecutando este comando! ${interaction.commandName}`,
           ephemeral: true,
         });
       }
