@@ -1,3 +1,4 @@
+const badWords = require("../modules/badWords");
 const OpenAI = require("openai");
 require("dotenv").config();
 
@@ -20,10 +21,9 @@ module.exports = {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const content = message.content.slice(prefix.length).trim();
 
-    if (tieneBads(content))
-      return message.channel
-        .send(`Este mensaje infringe nuestras politicas`)
-        .catch(console.error);
+    if (badWords(content)) {
+      return message.channel.send(`Este mensaje inflinge nuestras politicas de uso.`).catch(console.error);
+    }
 
     let msgUsername = message.member.displayName;
 
