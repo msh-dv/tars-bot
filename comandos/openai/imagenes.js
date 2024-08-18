@@ -17,6 +17,7 @@ module.exports = {
       option
         .setName("model")
         .setDescription("Modelo para generar la imagen.")
+        .setRequired(true)
         .addChoices(
           { name: "DALL-E-2", value: "dall-e-2" },
           { name: "DALL-E-3", value: "dall-e-3" }
@@ -26,6 +27,7 @@ module.exports = {
       option
         .setName("size")
         .setDescription("Tamaño de la imagen a generar.")
+        .setRequired(true)
         .addChoices(
           { name: "1024x1024", value: "1024x1024" },
           { name: "1792x1024", value: "1792x1024" },
@@ -41,19 +43,27 @@ module.exports = {
 
     try {
       const prompt = interaction.options.getString("prompt");
+      const model = interaction.options.getString("model");
+      const size = interaction.options.getString("size");
 
-      const response = await imageModel(prompt);
+      if (model == "dall-e-2" && (size == "1792x1024" || size == "1024x1792")) {
+        await interaction.editReply(
+          "> *Este tamaño no esta disponible para este modelo*"
+        );
+      }
+
+      const response = await imageModel(prompt, model, size);
 
       if (response) {
         const exampleEmbed = new EmbedBuilder()
           .setColor("White")
           .setTitle("Image generation with DALL-E")
           .addFields({ name: "Prompt:", value: `${prompt}` })
-          .addFields({ name: "Size:", value: "1024x1024" })
+          .addFields({ name: "Size:", value: `${size}` })
           .setImage(`${response}`)
           .setTimestamp()
           .setFooter({
-            text: "Generated with DALL-E-2",
+            text: `Generated with ${model.toUpperCase()}`,
             iconURL:
               "https://msh-dv.github.io/tars-website/images/profile-picture.png",
           });
