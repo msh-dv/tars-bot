@@ -1,10 +1,5 @@
-const OpenAI = require("openai");
+const textReq = require("../../modules/openai/textModel");
 const { SlashCommandBuilder } = require("discord.js");
-require("dotenv").config();
-
-const openai = new OpenAI({
-  apiKey: process.env["OPENAI_API_KEY"],
-});
 
 module.exports = {
   //Creamos un comando de slash "/"
@@ -20,50 +15,33 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    //Ejecutamos la respuesta al mensaje dado
-    const inte = interaction;
-    //Añadimos deferReply para evitar que la API marque un error por timeout
-    interaction.deferReply();
-    const mensaje = interaction.options.getString("mensaje");
-
-    //instrucciones predeterminadas
-    const instrucciones = `You are TAIRS, a Discord bot that uses OpenAI models to provide creative and detailed responses on any topic. The user language respons has to be the same that the input`;
-
-    const completion = await openai.chat.completions.create({
-      //Agregamos la informacion para hacer la peticion a la API de OpenAI
-      messages: [
-        {
-          role: "system",
-          content: instrucciones.trim(),
-        },
-        { role: "user", content: mensaje },
-      ],
-      model: "gpt-4o-mini",
-      max_tokens: 600,
-    });
-    //Creamos una variable para almacenar la respuesta completa
-    const chatCompletion = completion.choices[0].message.content;
-
     try {
-      if (chatCompletion.length > 2000) {
-        const firstPart = chatCompletion.substring(0, 2000);
-        const secondPart = chatCompletion.substring(2000);
-        await interaction.editReply(`${firstPart}`);
-        await interaction.followUp(`${secondPart}`);
-      } else {
-        await interaction.editReply(`${chatCompletion}`);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      await interaction.deferReply();
 
-    //Logs de las interacciones
-    console.log(
-      `Public: ${inte.user.username} at ${inte.createdAt}
-      Message: ${mensaje}
-      Response: ${chatCompletion}, Response.length = ${chatCompletion.length}
-      Tokens: ${completion.usage.total_tokens}
-      `
-    );
+      const inte = interaction;
+      const mensaje = interaction.options.getString("mensaje");
+
+      const response = await textReq(
+        inte.member.id,
+        inte.member.displayName,
+        mensaje
+      );
+
+      if (response) {
+        if (response.length > 2000) {
+          const firstPart = response.substring(0, 2000);
+          const secondPart = response.substring(2000);
+          await interaction.editReply(`${firstPart}`);
+          await interaction.followUp(`${secondPart}`);
+        } else {
+          await interaction.editReply(`${response}`);
+        }
+      } else {
+        await interaction.editReply(`> *This message violates our usage policies.* 
+      > *Este mensaje inflige nuestras politicas de uso.*`);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   },
 };
