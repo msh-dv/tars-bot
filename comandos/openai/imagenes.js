@@ -17,7 +17,6 @@ module.exports = {
       option
         .setName("model")
         .setDescription("Modelo para generar la imagen.")
-        .setRequired(true)
         .addChoices(
           { name: "DALL-E-2", value: "dall-e-2" },
           { name: "DALL-E-3", value: "dall-e-3" }
@@ -27,7 +26,6 @@ module.exports = {
       option
         .setName("size")
         .setDescription("Tamaño de la imagen a generar.")
-        .setRequired(true)
         .addChoices(
           { name: "1024x1024", value: "1024x1024" },
           { name: "1792x1024", value: "1792x1024" },
@@ -43,11 +41,13 @@ module.exports = {
 
     try {
       const prompt = interaction.options.getString("prompt");
-      const model = interaction.options.getString("model");
-      const size = interaction.options.getString("size");
+      let model = interaction.options.getString("model") || "dall-e-2";
+      let size = interaction.options.getString("size") || "1024x1024";
+
+      console.log(model, size);
 
       if (model == "dall-e-2" && (size == "1792x1024" || size == "1024x1792")) {
-        await interaction.editReply(
+        return await interaction.editReply(
           "> *Este tamaño no esta disponible para este modelo*"
         );
       }
