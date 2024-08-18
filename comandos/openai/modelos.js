@@ -17,12 +17,12 @@ module.exports = {
         {
           name: bold("Modelos de texto:"),
           value: codeBlock(
-            "gpt-4o-mini(actual)\ngpt-3.5-turbo\ngpt-4-turbo\ngpt-4o"
+            "gpt-4o-mini(default)\ngpt-3.5-turbo\ngpt-4-turbo\ngpt-4o"
           ),
         },
         {
           name: bold("Modelos de imagen:"),
-          value: codeBlock("Dall-E 3 (Proximamente)"),
+          value: codeBlock("DALL-E-2\nDALL-E-3"),
         }
       )
       .setTimestamp();

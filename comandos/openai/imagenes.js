@@ -1,18 +1,36 @@
 const imageModel = require("../../modules/openai/imageModel");
-const { SlashCommandBuilder, EmbedBuilder, bold } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  //Creamos un comando de slash "/"
   data: new SlashCommandBuilder()
     .setName("imagine")
     .setDescription("Genera imagenes con DALL-E-3")
     .addStringOption((option) =>
       option
-        //Pedimos un mensaje al usuario
         .setName("prompt")
         .setDescription("Descripcion de la imagen.")
+        .setRequired(true)
         .setMaxLength(4_50)
         .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("model")
+        .setDescription("Modelo para generar la imagen.")
+        .addChoices(
+          { name: "DALL-E-2", value: "dall-e-2" },
+          { name: "DALL-E-3", value: "dall-e-3" }
+        )
+    )
+    .addStringOption((option) =>
+      option
+        .setName("size")
+        .setDescription("Tamaño de la imagen a generar.")
+        .addChoices(
+          { name: "1024x1024", value: "1024x1024" },
+          { name: "1792x1024", value: "1792x1024" },
+          { name: "1024x1792", value: "1024x1792" }
+        )
     ),
   async execute(interaction) {
     await interaction.deferReply();
@@ -41,7 +59,8 @@ module.exports = {
           });
         await interaction.editReply({ embeds: [exampleEmbed] });
       } else {
-        await interaction.editReply("> *Esto esta mal*");
+        await interaction.editReply(`> *This message violates our usage policies.* 
+      > *Este mensaje inflige nuestras politicas de uso.*`);
       }
     } catch (err) {
       console.error(err);
