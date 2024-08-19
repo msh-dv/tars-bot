@@ -3,7 +3,13 @@ const isBadWord = require("../../badwords/badWords");
 require("dotenv").config();
 const openai = new OpenAI();
 
-async function imageModel(imgPrompt, model = "dall-e-2", size = "1024x1024") {
+async function imageModel(
+  id,
+  name,
+  imgPrompt,
+  model = "dall-e-2",
+  size = "1024x1024"
+) {
   if (await isBadWord(imgPrompt)) {
     return false;
   }
@@ -14,6 +20,8 @@ async function imageModel(imgPrompt, model = "dall-e-2", size = "1024x1024") {
     n: 1,
     size: size,
   });
+
+  console.log(`Image: ${id}/${name}:${imgPrompt}`);
 
   return image.data[0].url;
 }
