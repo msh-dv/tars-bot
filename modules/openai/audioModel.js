@@ -2,7 +2,7 @@ const OpenAI = require("openai");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const path = require("path");
-const isBadWord = require("../../../badwords/badWords");
+const isBadWord = require("../../badwords/badWords");
 require("dotenv").config();
 
 const openai = new OpenAI();
