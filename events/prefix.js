@@ -9,6 +9,8 @@ module.exports = {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const content = message.content.slice(prefix.length).trim();
 
+    // TODO:Agregar una validacion para el id y nombre
+
     try {
       const res = await textReq(
         message.author.id,
@@ -21,12 +23,10 @@ module.exports = {
           const firstPart = res.substring(0, 2000);
           const secondPart = res.substring(2000);
 
-          message.channel.send(firstPart).catch(console.error);
-          console.log(firstPart);
-          message.channel.send(secondPart).catch(console.error);
-          console.log(secondPart);
+          message.channel.send(firstPart);
+          message.channel.send(secondPart);
         } else {
-          message.channel.send(res).catch(console.error);
+          message.channel.send(res);
         }
       } else {
         message

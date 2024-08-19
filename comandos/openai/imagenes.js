@@ -34,8 +34,10 @@ module.exports = {
     ),
   async execute(interaction) {
     await interaction.deferReply();
+    const id = interaction.member.id;
+    const name = interaction.member.displayName;
 
-    if (interaction.member.id != "725826170519552172") {
+    if (id != "725826170519552172") {
       return await interaction.editReply("> *Acceso limitado por el momento*");
     }
 
@@ -44,15 +46,13 @@ module.exports = {
       let model = interaction.options.getString("model") || "dall-e-2";
       let size = interaction.options.getString("size") || "1024x1024";
 
-      console.log(model, size);
-
       if (model == "dall-e-2" && (size == "1792x1024" || size == "1024x1792")) {
         return await interaction.editReply(
           "> *Este tamaño no esta disponible para este modelo*"
         );
       }
 
-      const response = await imageModel(prompt, model, size);
+      const response = await imageModel(id, name, prompt, model, size);
 
       if (response) {
         const exampleEmbed = new EmbedBuilder()

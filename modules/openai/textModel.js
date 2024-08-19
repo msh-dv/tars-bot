@@ -14,6 +14,9 @@ async function textModel(id, name, message) {
 
   userInstance.addMessage({ role: "user", content: message });
 
+  console.log(`Message: ${id}:${name}:
+    ${message}`);
+
   const history = userInstance.getFullHistory();
 
   const completion = await openai.chat.completions.create({
