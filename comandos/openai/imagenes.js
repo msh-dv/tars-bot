@@ -74,6 +74,9 @@ module.exports = {
       }
     } catch (err) {
       console.error(err);
+      await interaction.editReply(
+        "> *Your request was rejected as a result of our safety system. Your prompt may contain text that is not allowed by our safety system*"
+      );
     }
   },
 };

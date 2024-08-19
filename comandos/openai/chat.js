@@ -42,6 +42,7 @@ module.exports = {
       }
     } catch (err) {
       console.error(err);
+      await interaction.editReply(`> *Hubo un erro ejecutando este comando*`);
     }
   },
 };
