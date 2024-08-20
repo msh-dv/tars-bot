@@ -1,4 +1,5 @@
 const audioReq = require("../../modules/openai/audioModel");
+const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const { SlashCommandBuilder } = require("discord.js");
 
@@ -51,7 +52,7 @@ module.exports = {
 
       if (response) {
         await interaction.editReply({
-          files: [{ attachment: response, name: "audio.mp3" }],
+          files: [{ attachment: response, name: `audio_${uuidv4()}.mp3` }],
         });
 
         console.log(`Eliminando: ${response}`);
