@@ -1,4 +1,4 @@
-const audioReq = require("../../modules/openai/audio/audioModel");
+const audioReq = require("../../modules/openai/audioModel");
 const fs = require("fs");
 const { SlashCommandBuilder } = require("discord.js");
 
