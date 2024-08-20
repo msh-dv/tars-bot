@@ -1,4 +1,5 @@
 const textReq = require("../../modules/openai/textModel");
+const imageVision = require("../../modules/openai/imageVision");
 const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
@@ -8,36 +9,55 @@ module.exports = {
     .setDescription("Envia un mensaje privado a ChatGPT")
     .addStringOption((option) =>
       option
+        //Pedimos un mensaje al usuario
         .setName("mensaje")
         .setDescription("Mensaje a enviar.")
         .setMaxLength(4_50)
         .setRequired(true)
+    )
+    .addAttachmentOption((option) =>
+      option.setName("imagen").setDescription("Imagen a analizar")
     ),
+
   async execute(interaction) {
     try {
       await interaction.deferReply({ ephemeral: true });
 
       const inte = interaction;
       const mensaje = interaction.options.getString("mensaje");
+      const imagen = interaction.options.getAttachment("imagen");
 
-      const response = await textReq(
-        inte.member.id,
-        inte.member.displayName,
-        mensaje
-      );
+      console.log(imagen.url);
 
-      if (response) {
-        if (response.length > 2000) {
-          const firstPart = response.substring(0, 2000);
-          const secondPart = response.substring(2000);
-          await interaction.editReply(`${firstPart}`);
-          await interaction.followUp(`${secondPart}`);
-        } else {
-          await interaction.editReply(`${response}`);
-        }
+      if (imagen) {
+        const imgResponse = await imageVision(
+          inte.member.id,
+          inte.member.displayName,
+          mensaje,
+          imagen.url
+        );
+
+        await interaction.editReply(`${imgResponse}`);
       } else {
-        await interaction.editReply(`> *This message violates our usage policies.* 
+        const response = await textReq(
+          inte.member.id,
+          inte.member.displayName,
+          mensaje
+        );
+
+        if (response) {
+          if (response.length > 2000) {
+            const firstPart = response.substring(0, 2000);
+            const secondPart = response.substring(2000);
+            await interaction.editReply(`${firstPart}`);
+            await interaction.followUp(`${secondPart}`);
+          } else {
+            await interaction.editReply(`${response}`);
+          }
+        } else {
+          await interaction.editReply(`> *This message violates our usage policies.* 
       > *Este mensaje inflige nuestras politicas de uso.*`);
+        }
       }
     } catch (err) {
       console.error(err);
