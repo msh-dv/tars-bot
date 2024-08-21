@@ -22,6 +22,7 @@ async function textModel(id, name, message) {
   const completion = await openai.chat.completions.create({
     messages: history,
     model: "gpt-4o-mini",
+    max_tokens: 500,
   });
 
   const chatCompletion = completion.choices[0].message.content;
