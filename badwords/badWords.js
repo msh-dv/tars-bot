@@ -9,9 +9,14 @@ const palabrasProhibidas = new Set(
 function isBadWord(mensaje) {
   const palabrasDelMensaje = mensaje.toLowerCase().split(/\s+/);
 
-  return palabrasDelMensaje.some((palabra) =>
-    palabrasProhibidas.has(palabra.toLowerCase())
-  );
+  for (const palabra of palabrasDelMensaje) {
+    if (palabrasProhibidas.has(palabra.toLowerCase())) {
+      console.log(palabra);
+      return true;
+    }
+  }
+
+  return false;
 }
 
 module.exports = isBadWord;
