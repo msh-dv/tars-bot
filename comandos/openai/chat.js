@@ -25,9 +25,7 @@ module.exports = {
 
       const inte = interaction;
       const mensaje = interaction.options.getString("mensaje");
-      const imagen = interaction.options.getAttachment("imagen");
-
-      console.log(imagen.url);
+      const imagen = interaction.options.getAttachment("imagen") || false;
 
       if (imagen) {
         const imgResponse = await imageVision(
@@ -61,7 +59,7 @@ module.exports = {
       }
     } catch (err) {
       console.error(err);
-      await interaction.editReply(`> *Hubo un erro ejecutando este comando*`);
+      await interaction.editReply(`> *Hubo un error ejecutando este comando*`);
     }
   },
 };
