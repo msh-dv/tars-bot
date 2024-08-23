@@ -1,5 +1,7 @@
 const User = require("./users");
 
+//Modulo para guardar instancias de usuarios desde otros archivos
+
 const userData = new Map();
 
 function getUser(id, name) {
