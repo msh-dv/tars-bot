@@ -1,15 +1,15 @@
+//Comando para llamadas al modelo de texto, incluyendo una imagen opcional
+
 const textReq = require("../../modules/openai/textModel");
 const imageVision = require("../../modules/openai/imageVision");
 const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
-  //Creamos un comando de slash "/"
   data: new SlashCommandBuilder()
     .setName("chat")
     .setDescription("Envia un mensaje a ChatGPT")
     .addStringOption((option) =>
       option
-        //Pedimos un mensaje al usuario
         .setName("mensaje")
         .setDescription("Mensaje a enviar.")
         .setMaxLength(4_50)
@@ -27,6 +27,8 @@ module.exports = {
       const mensaje = interaction.options.getString("mensaje");
       const imagen = interaction.options.getAttachment("imagen") || false;
 
+      //Validando si se ha enviado una imagen
+
       if (imagen) {
         const imgResponse = await imageVision(
           inte.member.id,
@@ -42,6 +44,9 @@ module.exports = {
           inte.member.displayName,
           mensaje
         );
+
+        //Validando si se envio una respuesta y dividiendola si se pasa de 2000
+        //caracteres (limite de discord)
 
         if (response) {
           if (response.length > 2000) {
