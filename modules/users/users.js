@@ -3,13 +3,20 @@ class User {
     this.id = id;
     this.name = name;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    this.maxHistory = 12;
+>>>>>>> e1fb886 (Update files)
     this.TextModel = "gpt-4o-mini";
     this.ImageModel = "dall-e-2";
     this.AudioModel = "tts-1";
     this.maxHistory = 10;
+<<<<<<< HEAD
 =======
     this.maxHistory = 12;
 >>>>>>> 89d19e9 (Add new username setter in class User)
+=======
+>>>>>>> e1fb886 (Update files)
     this.instrucciones =
       "You are TARS, a Discord bot that uses OpenAI models to provide creative and detailed responses on any topic. The user language respons has to be the same that the input";
     this.fixedHistory = [
