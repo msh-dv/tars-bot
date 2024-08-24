@@ -14,7 +14,6 @@ module.exports = {
       "Personaliza los modelos por defecto para texto, imagenes y audio."
     ),
   async execute(interaction) {
-    // const inter = interaction.guild;
     const textSelector = new StringSelectMenuBuilder()
       .setCustomId("textModels")
       .setPlaceholder("GPT-4o-mini")
@@ -22,7 +21,8 @@ module.exports = {
         new StringSelectMenuOptionBuilder()
           .setLabel("GPT-4o-mini")
           .setDescription("Modelo más accesible para tareas rápidas y ligeras.")
-          .setValue("gpt-4o-mini"),
+          .setValue("gpt-4o-mini")
+          .setDefault(true),
         new StringSelectMenuOptionBuilder()
           .setLabel("GPT-4o")
           .setDescription(
@@ -48,7 +48,8 @@ module.exports = {
           .setDescription(
             "Modelo de generación de imagenes realistas y precisas."
           )
-          .setValue("dall-e-2"),
+          .setValue("dall-e-2")
+          .setDefault(true),
         new StringSelectMenuOptionBuilder()
           .setLabel("DALL-E-3")
           .setDescription(
@@ -63,7 +64,8 @@ module.exports = {
         new StringSelectMenuOptionBuilder()
           .setLabel("TTS-1")
           .setDescription("Modelo de texto a voz, más rápido.")
-          .setValue("tts-1"),
+          .setValue("tts-1")
+          .setDefault(true),
         new StringSelectMenuOptionBuilder()
           .setLabel("TTS-1-HD")
           .setDescription("Modelo de texto a voz, mayor calidad de audio.")
