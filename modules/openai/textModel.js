@@ -6,10 +6,9 @@ require("dotenv").config();
 const openai = new OpenAI();
 
 async function textModel(id, name, message) {
-  if (await isBadWord(message)) {
+  if (isBadWord(message)) {
     return false;
   }
-
   const userInstance = getUser(id, name);
 
   userInstance.addMessage({ role: "user", content: message });
@@ -18,10 +17,11 @@ async function textModel(id, name, message) {
     ${message}`);
 
   const history = userInstance.getFullHistory();
+  const userModel = userInstance.TextModel;
 
   const completion = await openai.chat.completions.create({
     messages: history,
-    model: "gpt-4o-mini",
+    model: userModel,
     max_tokens: 500,
   });
 
