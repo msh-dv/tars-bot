@@ -10,7 +10,7 @@ async function imageModel(
   model = "dall-e-2",
   size = "1024x1024"
 ) {
-  if (await isBadWord(imgPrompt)) {
+  if (isBadWord(imgPrompt)) {
     return false;
   }
 

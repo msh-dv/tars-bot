@@ -6,8 +6,6 @@ class User {
     this.TextModel = "gpt-4o-mini";
     this.ImageModel = "dall-e-2";
     this.AudioModel = "tts-1";
-    this.maxHistory = 10;
-    this.maxHistory = 12;
     this.instrucciones =
       "You are TARS, a Discord bot that uses OpenAI models to provide creative and detailed responses on any topic. The user language respons has to be the same that the input";
     this.fixedHistory = [
