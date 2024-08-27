@@ -1,15 +1,15 @@
+//Comando para llamadas al modelo de texto privadas, incluyendo una imagen opcional
+
 const textReq = require("../../modules/openai/textModel");
 const imageVision = require("../../modules/openai/imageVision");
 const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
-  //Creamos un comando de slash "/"
   data: new SlashCommandBuilder()
     .setName("priv")
     .setDescription("Envia un mensaje privado a ChatGPT")
     .addStringOption((option) =>
       option
-        //Pedimos un mensaje al usuario
         .setName("mensaje")
         .setDescription("Mensaje a enviar.")
         .setMaxLength(4_50)
@@ -20,28 +20,34 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    try {
-      await interaction.deferReply({ ephemeral: true });
+    const mensaje = interaction.options.getString("mensaje");
+    const imagen = interaction.options.getAttachment("imagen") || false;
+    const userName = interaction.member.displayName || "anon";
+    const userID = interaction.member.id || "none";
+    const date = interaction.createdAt;
 
-      const inte = interaction;
-      const mensaje = interaction.options.getString("mensaje");
-      const imagen = interaction.options.getAttachment("imagen") || false;
+    try {
+      console.log(
+        `${date}\nPrivado (priv): ${userName} ${userID}\nmsg: ${mensaje}`
+      );
+      await interaction.deferReply({ ephemeral: true });
+      //Validando si se ha enviado una imagen
 
       if (imagen) {
+        console.log("Tipo:Imagen adjunta");
         const imgResponse = await imageVision(
-          inte.member.id,
-          inte.member.displayName,
+          userID,
+          userName,
           mensaje,
           imagen.url
         );
 
         await interaction.editReply(`${imgResponse}`);
       } else {
-        const response = await textReq(
-          inte.member.id,
-          inte.member.displayName,
-          mensaje
-        );
+        const response = await textReq(userID, userName, mensaje);
+
+        //Validando si se envio una respuesta y dividiendola si se pasa de 2000
+        //caracteres (limite de discord)
 
         if (response) {
           if (response.length > 2000) {
@@ -58,7 +64,7 @@ module.exports = {
         }
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error de comando:", err);
       await interaction.editReply(`> *Hubo un error ejecutando este comando*`);
     }
   },

@@ -9,25 +9,28 @@ module.exports = {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const content = message.content.slice(prefix.length).trim();
     const attachmentURL = message.attachments.first();
+    const userID = message.author.id;
+    const userName = message.author.displayName;
+    const date = message.createdAt;
 
     // TODO:Agregar una validacion para el id y nombre
 
     try {
+      console.log(
+        `${date}\nPublico (prefijo): ${userName} ${userID}\nmsg: ${content}`
+      );
       if (attachmentURL) {
+        console.log("Tipo:Imagen adjunta");
         const imgResponse = await imageVision(
-          message.author.id,
-          message.author.displayName,
+          userID,
+          userName,
           content,
           attachmentURL.url
         );
 
         message.channel.send(imgResponse);
       } else {
-        const res = await textReq(
-          message.author.id,
-          message.author.displayName,
-          content
-        );
+        const res = await textReq(userID, userName, content);
 
         if (res) {
           if (res.length > 2000) {
@@ -49,7 +52,7 @@ module.exports = {
         }
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error de comando (prefijo):", err.message);
       message.reply("> *Hubo un error ejecutando este comando.*");
     }
   },

@@ -34,15 +34,18 @@ module.exports = {
     ),
   async execute(interaction) {
     await interaction.deferReply();
-    const id = interaction.member.id;
-    const name = interaction.member.displayName;
+    const userID = interaction.member.id;
+    const userName = interaction.member.displayName;
+    const date = interaction.createdAt;
+    const prompt = interaction.options.getString("prompt");
 
-    if (id != "725826170519552172") {
+    if (userID != "725826170519552172") {
       return await interaction.editReply("> *Acceso limitado por el momento*");
     }
 
     try {
-      const prompt = interaction.options.getString("prompt");
+      console.log(`${date}\nImagen: ${userName} ${userID}\nprompt: ${prompt}`);
+
       let model = interaction.options.getString("model") || "dall-e-2";
       let size = interaction.options.getString("size") || "1024x1024";
 
@@ -52,7 +55,7 @@ module.exports = {
         );
       }
 
-      const response = await imageModel(id, name, prompt, model, size);
+      const response = await imageModel(prompt, model, size);
 
       if (response) {
         const exampleEmbed = new EmbedBuilder()
@@ -73,7 +76,7 @@ module.exports = {
       > *Este mensaje inflige nuestras politicas de uso.*`);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error de comando(Imagen):", err.message);
       await interaction.editReply(
         "> *Your request was rejected as a result of our safety system. Your prompt may contain text that is not allowed by our safety system*"
       );
