@@ -19,6 +19,7 @@ module.exports = {
         .setName("model")
         .setDescription("Modelo de audio.")
         .addChoices({ name: "tts-1", value: "tts-1" })
+        .addChoices({ name: "tts-1-hd", value: "tts-1-hd" })
     )
     .addStringOption((option) =>
       option
