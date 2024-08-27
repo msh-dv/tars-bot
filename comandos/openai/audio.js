@@ -34,21 +34,17 @@ module.exports = {
         )
     ),
   async execute(interaction) {
+    const inte = interaction;
+    const mensaje = interaction.options.getString("prompt");
+    const userID = inte.member.id;
+    const userName = inte.member.displayName;
+    let model = interaction.options.getString("model") || "tts-1";
+    let voice = interaction.options.getString("voice") || "nova";
     try {
+      console.log(`${date}\nAudio: ${userName} ${userID}\nmsg: ${mensaje}`);
       await interaction.deferReply();
 
-      const inte = interaction;
-      const mensaje = interaction.options.getString("prompt");
-      let model = interaction.options.getString("model") || "tts-1";
-      let voice = interaction.options.getString("voice") || "nova";
-
-      const response = await audioReq(
-        inte.member.id,
-        inte.member.displayName,
-        model,
-        voice,
-        mensaje
-      );
+      const response = await audioReq(model, voice, mensaje);
 
       if (response) {
         await interaction.editReply({
@@ -59,11 +55,11 @@ module.exports = {
         fs.promises.unlink(response);
       } else {
         await interaction.editReply(
-          `> *Este mensaje inflige nuestras politicas de uso*`
+          `> *Hubo un error ejecutando este comando.*`
         );
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error de comando ( audio )", err.message);
       await interaction.editReply(`> *Hubo un erro ejecutando este comando*`);
     }
   },

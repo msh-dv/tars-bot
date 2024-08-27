@@ -10,25 +10,27 @@ const openai = new OpenAI();
 const uniqueFileName = `speech_${uuidv4()}.mp3`;
 const speechFile = path.resolve(`./tmp/${uniqueFileName}`);
 
-async function audioModel(id, name, model = "tts-1", voice = "nova", prompt) {
-  if (await isBadWord(prompt)) {
-    return false;
+async function audioModel(model = "tts-1", voice = "nova", prompt) {
+  try {
+    if (isBadWord(prompt)) {
+      return false;
+    }
+
+    const audio = await openai.audio.speech.create({
+      model: model,
+      voice: voice,
+      input: prompt,
+    });
+
+    console.log(audio);
+    console.log(speechFile);
+    const buffer = Buffer.from(await audio.arrayBuffer());
+    await fs.promises.writeFile(speechFile, buffer);
+
+    return speechFile;
+  } catch (error) {
+    console.error("Error de OpenAI ( audio )", error.message);
   }
-
-  const audio = await openai.audio.speech.create({
-    model: model,
-    voice: voice,
-    input: prompt,
-  });
-
-  console.log(audio);
-  console.log(speechFile);
-  const buffer = Buffer.from(await audio.arrayBuffer());
-  await fs.promises.writeFile(speechFile, buffer);
-
-  console.log(`Audio: ${id} / ${name}: ${prompt}`);
-
-  return speechFile;
 }
 
 module.exports = audioModel;
