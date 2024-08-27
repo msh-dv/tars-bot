@@ -22,8 +22,6 @@ async function audioModel(model = "tts-1", voice = "nova", prompt) {
       input: prompt,
     });
 
-    console.log(audio);
-    console.log(speechFile);
     const buffer = Buffer.from(await audio.arrayBuffer());
     await fs.promises.writeFile(speechFile, buffer);
 
