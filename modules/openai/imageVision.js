@@ -1,13 +1,17 @@
 const OpenAI = require("openai");
 const { getUser } = require("../users/usersHistory");
-const isBadWord = require("../../badwords/badWords");
+const moderation = require("../moderation/moderation");
 require("dotenv").config();
 
 const openai = new OpenAI();
 
 async function textVision(id, name, message, attachment) {
   try {
-    if (isBadWord(message)) {
+    const result = await moderation(message);
+
+    if (result.flagged) {
+      console.log(result.categories);
+      console.log(result.category_scores);
       return false;
     }
 

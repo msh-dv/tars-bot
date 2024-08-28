@@ -1,15 +1,20 @@
 const OpenAI = require("openai");
 const { getUser } = require("../users/usersHistory");
-const isBadWord = require("../../badwords/badWords");
+const moderation = require("../moderation/moderation");
 require("dotenv").config();
 
 const openai = new OpenAI();
 
 async function textModel(id, name, message) {
   try {
-    if (isBadWord(message)) {
+    const result = await moderation(message);
+
+    if (result.flagged) {
+      console.log(result.categories);
+      console.log(result.category_scores);
       return false;
     }
+
     const userInstance = getUser(id, name);
 
     userInstance.addMessage({ role: "user", content: message });

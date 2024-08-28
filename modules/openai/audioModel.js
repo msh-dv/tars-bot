@@ -2,7 +2,7 @@ const OpenAI = require("openai");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const path = require("path");
-const isBadWord = require("../../badwords/badWords");
+const moderation = require("../moderation/moderation");
 require("dotenv").config();
 
 const openai = new OpenAI();
@@ -12,7 +12,11 @@ const speechFile = path.resolve(`./tmp/${uniqueFileName}`);
 
 async function audioModel(model = "tts-1", voice = "nova", prompt) {
   try {
-    if (isBadWord(prompt)) {
+    const result = await moderation(prompt);
+
+    if (result.flagged) {
+      console.log(result.categories);
+      console.log(result.category_scores);
       return false;
     }
 

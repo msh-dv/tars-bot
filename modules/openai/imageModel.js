@@ -1,11 +1,15 @@
 const OpenAI = require("openai");
-const isBadWord = require("../../badwords/badWords");
+const moderation = require("../moderation/moderation");
 require("dotenv").config();
 const openai = new OpenAI();
 
 async function imageModel(imgPrompt, model = "dall-e-2", size = "1024x1024") {
   try {
-    if (isBadWord(imgPrompt)) {
+    const result = await moderation(imgPrompt);
+
+    if (result.flagged) {
+      console.log(result.categories);
+      console.log(result.category_scores);
       return false;
     }
 
@@ -18,7 +22,7 @@ async function imageModel(imgPrompt, model = "dall-e-2", size = "1024x1024") {
 
     return image.data[0].url;
   } catch (error) {
-    console.error("Error de OpenAI(Imagen):", err.message);
+    console.error("Error de OpenAI(Imagen):", error.message);
   }
 }
 

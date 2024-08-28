@@ -28,7 +28,16 @@ module.exports = {
           attachmentURL.url
         );
 
-        message.channel.send(imgResponse);
+        if (imgResponse) {
+          message.channel.send(imgResponse);
+        } else {
+          message
+            .reply(
+              `> *This message violates our usage policies.*
+      > *Este mensaje inflige nuestras politicas de uso.*`
+            )
+            .catch((err) => console.error(err));
+        }
       } else {
         const res = await textReq(userID, userName, content);
 
