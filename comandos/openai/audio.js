@@ -35,16 +35,17 @@ module.exports = {
         )
     ),
   async execute(interaction) {
+    await interaction.deferReply();
     const inte = interaction;
     const mensaje = interaction.options.getString("prompt");
     const userID = inte.member.id;
     const userName = inte.member.displayName;
+    const date = inte.createdAt;
     let model = interaction.options.getString("model") || "tts-1";
     let voice = interaction.options.getString("voice") || "nova";
-    try {
-      console.log(`${date}\nAudio: ${userName} ${userID}\nmsg: ${mensaje}`);
-      await interaction.deferReply();
+    console.log(`${date}\nAudio: ${userName} ${userID}\nmsg: ${mensaje}`);
 
+    try {
       const response = await audioReq(model, voice, mensaje);
 
       if (response) {

@@ -26,7 +26,7 @@ for (const folder of commandFolders) {
   }
 }
 
-const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+const rest = new REST().setToken(process.env.DISCORD_EXPERIMENTAL_TOKEN);
 
 (async () => {
   try {
@@ -34,7 +34,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
       `Started refreshing ${commands.length} application (/) commands.`
     );
 
-    const data = await rest.put(Routes.applicationCommands(clientId), {
+    const data = await rest.put(Routes.applicationCommands("1261615935844782080"), {
       body: commands,
     });
 

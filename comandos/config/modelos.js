@@ -16,13 +16,12 @@ module.exports = {
   async execute(interaction) {
     const textSelector = new StringSelectMenuBuilder()
       .setCustomId("textModels")
-      .setPlaceholder("GPT-4o-mini")
+      .setPlaceholder("Texto")
       .addOptions(
         new StringSelectMenuOptionBuilder()
           .setLabel("GPT-4o-mini")
           .setDescription("Modelo más accesible para tareas rápidas y ligeras.")
-          .setValue("gpt-4o-mini")
-          .setDefault(true),
+          .setValue("gpt-4o-mini"),
         new StringSelectMenuOptionBuilder()
           .setLabel("GPT-4o")
           .setDescription(
@@ -41,15 +40,14 @@ module.exports = {
 
     const imageSelector = new StringSelectMenuBuilder()
       .setCustomId("imageModel")
-      .setPlaceholder("DALL-E-2")
+      .setPlaceholder("Imagenes")
       .addOptions(
         new StringSelectMenuOptionBuilder()
           .setLabel("DALL-E-2")
           .setDescription(
             "Modelo de generación de imagenes realistas y precisas."
           )
-          .setValue("dall-e-2")
-          .setDefault(true),
+          .setValue("dall-e-2"),
         new StringSelectMenuOptionBuilder()
           .setLabel("DALL-E-3")
           .setDescription(
@@ -59,13 +57,12 @@ module.exports = {
       );
     const audioSelector = new StringSelectMenuBuilder()
       .setCustomId("audioModel")
-      .setPlaceholder("TTS-1")
+      .setPlaceholder("Audio")
       .addOptions(
         new StringSelectMenuOptionBuilder()
           .setLabel("TTS-1")
           .setDescription("Modelo de texto a voz, más rápido.")
-          .setValue("tts-1")
-          .setDefault(true),
+          .setValue("tts-1"),
         new StringSelectMenuOptionBuilder()
           .setLabel("TTS-1-HD")
           .setDescription("Modelo de texto a voz, mayor calidad de audio.")
