@@ -1,11 +1,15 @@
 const {
+  bold,
   ActionRowBuilder,
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
   SlashCommandBuilder,
   ButtonBuilder,
   ButtonStyle,
+  EmbedBuilder,
+  codeBlock,
 } = require("discord.js");
+const { getUser } = require("../../modules/users/usersHistory");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,6 +18,32 @@ module.exports = {
       "Personaliza los modelos por defecto para texto, imagenes y audio."
     ),
   async execute(interaction) {
+    const userName = interaction.member.displayName || "anon";
+    const userID = interaction.member.id || "none";
+
+    const userData = getUser(userName, userID);
+
+    const embed = new EmbedBuilder()
+      .setColor("White")
+      .setTitle("Modelos del usuario:")
+      .setDescription(`${userName} (${userID})`)
+      .setThumbnail(interaction.user.avatarURL())
+      .addFields(
+        {
+          name: bold("Texto:"),
+          value: codeBlock(`${userData.TextModel}`),
+        },
+        {
+          name: bold("Imagenes:"),
+          value: codeBlock(`${userData.ImageModel}`),
+        },
+        {
+          name: bold("Audio:"),
+          value: codeBlock(`${userData.AudioModel}`),
+        }
+      )
+      .setTimestamp();
+
     const textSelector = new StringSelectMenuBuilder()
       .setCustomId("textModels")
       .setPlaceholder("Texto")
@@ -84,7 +114,8 @@ module.exports = {
     const buttons = new ActionRowBuilder().addComponents(cancel, save);
 
     await interaction.reply({
-      content: "# Modelos por defecto:",
+      content: "## Configuración de modelos:",
+      embeds: [embed],
       components: [textModel, imageModel, audioModel, buttons],
       ephemeral: true,
     });
