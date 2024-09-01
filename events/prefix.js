@@ -17,25 +17,21 @@ module.exports = {
 
     try {
       console.log(
-        `${date}\nPublico (prefijo): ${userName} ${userID}\nmsg: ${content}`
+        `${date}\nPublico (prefijo): ${userName} ${userID}\nmsg: ${content}\n${attachmentURL.url}`
       );
+
       if (attachmentURL) {
-        console.log("Tipo:Imagen adjunta");
         const imgResponse = await imageVision(
           userID,
           userName,
           content,
           attachmentURL.url
         );
-
         if (imgResponse) {
           message.channel.send(imgResponse);
         } else {
           message
-            .reply(
-              `> *This message violates our usage policies.*
-      > *Este mensaje inflige nuestras politicas de uso.*`
-            )
+            .reply("> *Hubo un error ejecutando este comando.*")
             .catch((err) => console.error(err));
         }
       } else {

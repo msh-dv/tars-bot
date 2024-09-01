@@ -8,14 +8,25 @@ const openai = new OpenAI();
 async function textVision(id, name, message, attachment) {
   try {
     const result = await moderation(message);
+    const userInstance = getUser(id, name);
 
     if (result.flagged) {
       console.log(result.categories);
       console.log(result.category_scores);
       return false;
     }
+    const ext = ["png", "jpeg", "gif", "webp"];
+    const filename = attachment.split("?")[0];
+    const fileExt = filename.split(".").pop().toLowerCase();
 
-    const userInstance = getUser(id, name);
+    if (ext.includes(fileExt)) {
+      console.log("Tipo:Imagen adjunta");
+    } else {
+      console.error(`Archivo no sportado: ${fileExt}`);
+      return `> ***Only "png", "jpeg", "gif" and "webp" are supported.***`;
+    }
+
+    // TODO:Integrar el modulo textModel
 
     userInstance.addMessage({
       role: "user",
@@ -38,7 +49,7 @@ async function textVision(id, name, message, attachment) {
 
     return chatCompletion;
   } catch (error) {
-    console.error("Error de Openai:", error.message);
+    console.error("Error de Openai (Image Vision):", error.message);
   }
 }
 
