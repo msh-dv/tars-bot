@@ -98,25 +98,15 @@ module.exports = {
           .setDescription("Modelo de texto a voz, mayor calidad de audio.")
           .setValue("tts-1-hd")
       );
-    const save = new ButtonBuilder()
-      .setCustomId("save")
-      .setLabel("Guardar")
-      .setStyle(ButtonStyle.Primary);
-
-    const cancel = new ButtonBuilder()
-      .setCustomId("cancel")
-      .setLabel("Cancelar")
-      .setStyle(ButtonStyle.Secondary);
 
     const textModel = new ActionRowBuilder().addComponents(textSelector);
     const imageModel = new ActionRowBuilder().addComponents(imageSelector);
     const audioModel = new ActionRowBuilder().addComponents(audioSelector);
-    const buttons = new ActionRowBuilder().addComponents(cancel, save);
 
     await interaction.reply({
       content: "## Configuración de modelos:",
       embeds: [embed],
-      components: [textModel, imageModel, audioModel, buttons],
+      components: [textModel, imageModel, audioModel],
       ephemeral: true,
     });
   },

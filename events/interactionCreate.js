@@ -33,6 +33,14 @@ module.exports = {
       }
       // Revisar si la interaccion es un elemento de seleccion multiple
     } else if (interaction.isStringSelectMenu) {
+      //Restriccion de uso
+      if (interaction.member.id != "725826170519552172") {
+        await interaction.reply({
+          content: `Acceso restringido para testers por ahora.`,
+          ephemeral: true,
+        });
+        return;
+      }
       const userName = interaction.member.displayName || "anon";
       const userID = interaction.member.id || "none";
       const userData = getUser(userName, userID);
@@ -44,28 +52,28 @@ module.exports = {
       switch (interactionID) {
         case "textModels":
           await interaction.reply({
-            content: `Actualizando modelo de texto a: ${interactionValue}`,
+            content: `> Actualizando modelo de Texto a: **${interactionValue}**`,
             ephemeral: true,
           });
           userData.TextModel = interactionValue;
           break;
         case "imageModel":
           await interaction.reply({
-            content: `Actualizando modelo de imagenes a: ${interactionValue}`,
+            content: `> Actualizando modelo de Imagenes a: **${interactionValue}**`,
             ephemeral: true,
           });
           userData.ImageModel = interactionValue;
           break;
         case "audioModel":
           await interaction.reply({
-            content: `Actualizando modelo de audio a: ${interactionValue}`,
+            content: `> Actualizando modelo de Audio a: **${interactionValue}**`,
             ephemeral: true,
           });
           userData.AudioModel = interactionValue;
           break;
         default:
           await interaction.reply({
-            content: `ID no valido: ${interactionValue}`,
+            content: `> *Dato no valido: **${interactionValue}***`,
             ephemeral: true,
           });
       }

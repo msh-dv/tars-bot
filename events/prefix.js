@@ -17,10 +17,13 @@ module.exports = {
 
     try {
       console.log(
-        `${date}\nPublico (prefijo): ${userName} ${userID}\nmsg: ${content}\n${attachmentURL.url}`
+        `${date}\nPublico (prefijo): ${userName} ${userID}\nmsg: ${content}`
       );
 
       if (attachmentURL) {
+        console.log(
+          `${date}\nPublico (prefijo): ${userName} ${userID}\nmsg: ${content}\n${attachmentURL.url}`
+        );
         const imgResponse = await imageVision(
           userID,
           userName,
