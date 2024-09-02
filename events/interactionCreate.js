@@ -125,6 +125,7 @@ module.exports = {
         userData.wipeMemory();
         await interaction.reply({
           content: "Memoria del asistente restaurada.",
+        // ephemeral: true,
         });
       }
     } else if (interaction.isModalSubmit()) {
@@ -151,7 +152,7 @@ module.exports = {
 
       await interaction.reply({
         content: `Se actualizaron los datos del asistente.`,
-        ephemeral: true,
+        // ephemeral: true,
       });
     }
   },
