@@ -159,7 +159,7 @@ module.exports = {
 
       await interaction.reply({
         content: `Se actualizaron los datos del asistente.`,
-        // ephemeral: true,
+        ephemeral: true,
       });
     }
   },
