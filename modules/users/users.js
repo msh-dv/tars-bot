@@ -31,6 +31,16 @@ class User {
     return [...this.fixedHistory, ...this.dynamicHistory];
   }
 
+  wipeMemory() {
+    this.instrucciones =
+      "You are TARS, a Discord bot that uses OpenAI models to provide creative and detailed responses on any topic. The user language respons has to be the same that the input";
+    this.fixedHistory = [
+      { role: "system", content: this.instrucciones },
+      { role: "system", content: `The user name is ${this.name}` },
+    ];
+    this.dynamicHistory = [];
+  }
+
   setNewInstructions(newInstructions) {
     this.instrucciones = newInstructions;
     this.fixedHistory[0] = { role: "system", content: newInstructions };

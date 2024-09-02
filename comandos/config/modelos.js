@@ -4,8 +4,6 @@ const {
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
   SlashCommandBuilder,
-  ButtonBuilder,
-  ButtonStyle,
   EmbedBuilder,
   codeBlock,
 } = require("discord.js");
