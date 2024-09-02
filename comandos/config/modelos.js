@@ -19,7 +19,7 @@ module.exports = {
     const userName = interaction.member.displayName || "anon";
     const userID = interaction.member.id || "none";
 
-    const userData = getUser(userName, userID);
+    const userData = getUser(userID, userName);
 
     const embed = new EmbedBuilder()
       .setColor("White")

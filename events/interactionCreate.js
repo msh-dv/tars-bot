@@ -46,7 +46,7 @@ module.exports = {
     } else if (interaction.isStringSelectMenu()) {
       const select = interaction;
       const interactionID = select.customId;
-      const interactionValue = select.values;
+      const interactionValue = select.values[0];
       //Restriccion de uso
       if (userID != "725826170519552172") {
         await interaction.reply({
