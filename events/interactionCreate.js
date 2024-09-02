@@ -100,12 +100,13 @@ module.exports = {
           .setPlaceholder("e.g Victor Manuel Vicente, Juan.")
           .setRequired(false)
           .setMaxLength(2_0)
+          .setValue(`${userName}`)
           .setStyle(TextInputStyle.Short);
 
         const nuevasInstrucciones = new TextInputBuilder()
           .setCustomId("modalIntructions")
           .setLabel("Instrucciones estaticas:")
-          .setPlaceholder("e.g Te llamas Sara y eres un asistente muy util.")
+          .setPlaceholder("e.g Te llamas TARS y eres un asistente muy util.")
           .setMaxLength(4_50)
           .setRequired(false)
           .setStyle(TextInputStyle.Paragraph);
@@ -125,16 +126,22 @@ module.exports = {
         userData.wipeMemory();
         await interaction.reply({
           content: "Memoria del asistente restaurada.",
-        // ephemeral: true,
+          // ephemeral: true,
         });
       }
     } else if (interaction.isModalSubmit()) {
-      const nuevoUsername =
-        interaction.fields.getTextInputValue("modalUserName");
-      const nuevasInstrucciones =
+      let nuevoUsername = interaction.fields.getTextInputValue("modalUserName");
+      let nuevasInstrucciones =
         interaction.fields.getTextInputValue("modalIntructions");
-      console.log({ nuevoUsername, nuevasInstrucciones });
 
+      if (!nuevoUsername.trim()) {
+        nuevoUsername = `${userName}`;
+      }
+      if (!nuevasInstrucciones.trim()) {
+        nuevasInstrucciones = `Default`;
+      }
+
+      console.log({ nuevoUsername, nuevasInstrucciones });
       const isName = await moderation(nuevoUsername);
       const isInst = await moderation(nuevasInstrucciones);
 
