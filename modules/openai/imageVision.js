@@ -15,7 +15,7 @@ async function textVision(id, name, message, attachment) {
       console.log(result.category_scores);
       return false;
     }
-    const ext = ["png", "jpeg", "gif", "webp"];
+    const ext = ["png", "jpeg", "jpg", "gif", "webp"];
     const filename = attachment.split("?")[0];
     const fileExt = filename.split(".").pop().toLowerCase();
 
