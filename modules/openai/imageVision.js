@@ -23,7 +23,7 @@ async function textVision(id, name, message, attachment) {
       console.log("Tipo:Imagen adjunta");
     } else {
       console.error(`Archivo no sportado: ${fileExt}`);
-      return `> ***Only "png", "jpeg", "gif" and "webp" are supported.***`;
+      return `> ***Only "png", "jpeg/jpg", "gif" and "webp" are supported.***`;
     }
 
     // TODO:Integrar el modulo textModel
