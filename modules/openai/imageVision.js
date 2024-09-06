@@ -45,7 +45,7 @@ async function textVision(id, name, message, attachment) {
 
     const chatCompletion = completion.choices[0].message.content;
 
-    userInstance.addMessage({ role: "user", content: chatCompletion });
+    userInstance.addMessage({ role: "assistant", content: chatCompletion });
 
     return chatCompletion;
   } catch (error) {
