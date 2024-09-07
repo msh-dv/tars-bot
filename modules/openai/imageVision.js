@@ -10,15 +10,15 @@ async function textVision(id, name, message, attachment) {
   try {
     const result = await moderation(message);
     const userInstance = getUser(id, name);
+    const ext = ["png", "jpeg", "jpg", "gif", "webp"];
+    const filename = attachment.split("?")[0];
+    const fileExt = filename.split(".").pop().toLowerCase();
 
     if (result.flagged) {
       console.log(result.categories);
       console.log(result.category_scores);
       return false;
     }
-    const ext = ["png", "jpeg", "jpg", "gif", "webp"];
-    const filename = attachment.split("?")[0];
-    const fileExt = filename.split(".").pop().toLowerCase();
 
     if (ext.includes(fileExt)) {
       console.log("Tipo:Imagen adjunta");
@@ -27,31 +27,39 @@ async function textVision(id, name, message, attachment) {
       return `> ***Only "png", "jpeg/jpg", "gif" and "webp" are supported.***`;
     }
 
-    // TODO:Integrar el modulo textModel
+    // TODO: Integrar el módulo textModel
 
-    userInstance.addMessage({
-      role: "user",
-      content: [
-        { type: "text", text: message },
-        { type: "image_url", image_url: { url: `${attachment}` } },
-      ],
-    });
+    try {
+      userInstance.addMessage({
+        role: "user",
+        content: [
+          { type: "text", text: message },
+          { type: "image_url", image_url: { url: `${attachment}` } },
+        ],
+      });
 
-    const history = userInstance.getFullHistory();
+      const history = userInstance.getFullHistory();
 
-    const completion = await openai.chat.completions.create({
-      messages: history,
-      model: "gpt-4o-mini",
-    });
+      const completion = await openai.chat.completions.create({
+        messages: history,
+        model: "gpt-4o-mini",
+      });
 
-    const chatCompletion = completion.choices[0].message.content;
+      const chatCompletion = completion.choices[0].message.content;
 
-    userInstance.addMessage({ role: "assistant", content: chatCompletion });
+      userInstance.addMessage({ role: "assistant", content: chatCompletion });
 
-    return chatCompletion;
+      return chatCompletion;
+    } catch (error) {
+      console.error(date, "Error de llamada Image Vision:", error.message);
+      userInstance.dynamicHistory.splice(-2, 2);
+      // userInstance.wipeMemory();
+      return "> *Ocurrio un error con la llamada, archivo corrupto o extension incorrecta.*";
+    }
   } catch (error) {
-    console.error(date, "Error de Openai (Image Vision):", error.message);
-    console.error(`${id} : ${name} : ${message}`);
+    console.error(date, "Error de OpenAI (Image Vision):", error.message);
+    console.error(`${id} : ${name} : ${message}\n${attachment}`);
+    return false;
   }
 }
 
