@@ -4,6 +4,7 @@ const moderation = require("../moderation/moderation");
 require("dotenv").config();
 
 const openai = new OpenAI();
+const date = new Date();
 
 async function textVision(id, name, message, attachment) {
   try {
@@ -49,7 +50,8 @@ async function textVision(id, name, message, attachment) {
 
     return chatCompletion;
   } catch (error) {
-    console.error("Error de Openai (Image Vision):", error.message);
+    console.error(date, "Error de Openai (Image Vision):", error.message);
+    console.error(`${id} : ${name} : ${message}`);
   }
 }
 

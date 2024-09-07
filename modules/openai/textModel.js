@@ -4,6 +4,7 @@ const moderation = require("../moderation/moderation");
 require("dotenv").config();
 
 const openai = new OpenAI();
+const date = new Date();
 
 async function textModel(id, name, message) {
   try {
@@ -34,7 +35,8 @@ async function textModel(id, name, message) {
 
     return chatCompletion;
   } catch (error) {
-    console.error("Error de Openai (Texto): ", error.message);
+    console.error(date, " Error de Openai (Texto): ", error.message);
+    console.error(`${id} : ${name} : ${message}`);
   }
 }
 
