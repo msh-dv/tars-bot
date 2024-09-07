@@ -1,4 +1,3 @@
-// "You are TARS, a Discord bot that uses OpenAI models to provide creative and detailed responses on any topic. The user language respons has to be the same that the input";
 class User {
   constructor(id, name) {
     this.id = id;
