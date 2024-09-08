@@ -1,12 +1,13 @@
-const { SlashCommandBuilder, codeBlock, bold } = require("discord.js");
-const { EmbedBuilder } = require("discord.js");
+// Informacion sobre comandos
+const { SlashCommandBuilder, EmbedBuilder, bold } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("help")
     .setDescription("Muestra informacion de ayuda."),
   async execute(interaction) {
-    const exampleEmbed = new EmbedBuilder()
+    const commands = interaction.client.commands;
+    const helpEmbed = new EmbedBuilder()
       .setColor("White")
       .setTitle("Comandos")
       .setAuthor({
@@ -18,41 +19,20 @@ module.exports = {
       .setThumbnail(
         "https://msh-dv.github.io/tars-website/images/profile-picture.png"
       )
-      .addFields(
-        {
-          name: bold("/help"),
-          value: codeBlock("Muestra este mensaje de ayuda."),
-        },
-        {
-          name: bold("/chat"),
-          value: codeBlock("Envia un mensaje a ChatGPT."),
-        },
-        {
-          name: bold("/priv"),
-          value: codeBlock("Envia un mensaje privado a ChatGPT."),
-        },
-        {
-          name: bold("/modelos"),
-          value: codeBlock("Muestra los modelos disponibles."),
-        },
-        {
-          name: bold("/server"),
-          value: codeBlock("Muestra información del servidor."),
-        },
-        {
-          name: bold("/info"),
-          value: codeBlock("Muestra información del usuario."),
-        },
-        {
-          name: bold("/invite"),
-          value: codeBlock("Link de invitacion para el bot."),
-        },
-        { name: bold("/hi"), value: codeBlock("Responde con un Hola!") },
-        { name: bold("/echo"), value: codeBlock("Repite lo que le digas.") },
-        { name: bold("/ping"), value: codeBlock("Responde con un Pong!") }
-      )
+      .addFields({
+        name: `ts `,
+        value: "Prefijo para chat, similar a /chat y /priv",
+      })
       .setTimestamp();
 
-    await interaction.reply({ embeds: [exampleEmbed] });
+    commands.forEach((command) => {
+      helpEmbed.addFields({
+        name: `/${command.data.name}`,
+        value: `${command.data.description}`,
+        inline: true,
+      });
+    });
+
+    await interaction.reply({ embeds: [helpEmbed] });
   },
 };

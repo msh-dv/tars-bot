@@ -2,7 +2,7 @@ class User {
   constructor(id, name) {
     this.id = id;
     this.name = name;
-    this.maxHistory = 13;
+    this.maxHistory = 15;
     this.TextModel = "gpt-4o-mini";
     this.ImageModel = "dall-e-2";
     this.AudioModel = "tts-1";
@@ -11,6 +11,10 @@ class User {
     this.fixedHistory = [
       { role: "system", content: this.instrucciones },
       { role: "system", content: `The user name is ${this.name}` },
+      {
+        role: "system",
+        content: `Your current text model is ${this.TextModel}`,
+      },
     ];
     this.dynamicHistory = [];
 

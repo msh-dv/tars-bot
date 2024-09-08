@@ -52,9 +52,9 @@ async function textVision(id, name, message, attachment) {
       return chatCompletion;
     } catch (error) {
       console.error(date, "Error de llamada Image Vision:", error.message);
+      //Elimiar resgistro erroneo del historial para evitar errores
       userInstance.dynamicHistory.splice(-2, 2);
-      // userInstance.wipeMemory();
-      return "> *Ocurrio un error con la llamada, archivo corrupto o extension incorrecta.*";
+      return "> *Ocurrio un error con el comando, archivo corrupto o extension incorrecta.*";
     }
   } catch (error) {
     console.error(date, "Error de OpenAI (Image Vision):", error.message);
