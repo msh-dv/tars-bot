@@ -22,7 +22,7 @@ module.exports = {
 
     showGuildUsersCount();
 
-    setInterval(showGuildUsersCount, 100000);
+    setInterval(showGuildUsersCount, 600000);
 
     console.log(`Ready! logged as ${client.user.tag}`);
   },
