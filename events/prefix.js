@@ -31,7 +31,15 @@ module.exports = {
           attachmentURL.url
         );
         if (imgResponse) {
-          message.channel.send(imgResponse);
+          if (imgResponse.length > 2000) {
+            const firstPart = imgResponse.substring(0, 2000);
+            const secondPart = imgResponse.substring(2000);
+
+            message.channel.send(firstPart);
+            message.channel.send(secondPart);
+          } else {
+            message.channel.send(imgResponse);
+          }
         } else {
           message
             .reply("> *Hubo un error ejecutando este comando.*")
