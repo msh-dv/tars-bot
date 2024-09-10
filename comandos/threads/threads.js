@@ -3,7 +3,10 @@
 
 // const textReq = require("../../modules/openai/textModel");
 // const imageVision = require("../../modules/openai/imageVision");
-const { SlashCommandBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  ThreadAutoArchiveDuration,
+} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,14 +15,31 @@ module.exports = {
       "Genera un hilo separado del canal para un tema especifico."
     )
     .addStringOption((option) =>
-      option.setName("nombre").setDescription("Nombre del hilo.")
+      option
+        .setName("nombre")
+        .setDescription("Nombre del hilo.")
+        .setMaxLength(1_00)
     ),
 
   async execute(interaction) {
-    // const mensaje = interaction.options.getString("mensaje");
-    // const userName = interaction.member.displayName || "anon";
-    // const userID = interaction.member.id || "none";
+    const userID = interaction.member.id || "none";
     // const date = interaction.createdAt;
+
+    const threadName = interaction.options.getString("nombre");
+    const thread = await interaction.channel.threads.create({
+      name: `${threadName}`,
+      autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+      reason: "Hilo del bot",
+    });
+
+    const threadToJoin = interaction.channel.threads.cache.find(
+      (x) => x.name === `${threadName}`
+    );
+    if (threadToJoin.joinable) await thread.join();
+    await thread.members.add(`${userID}`);
+
+    console.log(`Created thread: ${thread.name}`);
+    await interaction.reply(`Nueva conversacion creada ${threadName}`);
 
     try {
     } catch (err) {

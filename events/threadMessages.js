@@ -1,6 +1,4 @@
 const textReq = require("../modules/openai/textModel");
-const imageVision = require("../modules/openai/imageVision");
-const prefix = "ts ";
 
 module.exports = {
   name: "messageCreate",
@@ -9,13 +7,17 @@ module.exports = {
     const { content, attachments, author, createdAt, channel, reference } =
       message;
     const { id: userID, displayName: userName, bot: isBot } = author;
-    contentLower = content.toLowerCase();
 
-    if (!contentLower.startsWith(prefix) || isBot) return;
+    const threadID = message.channel.id;
+    const threadName = message.channel.name;
 
-    const command = content.slice(prefix.length).trim();
+    if (!channel.isThread() || isBot) return;
+    const prefix = "ts ";
+    if (contentLower.startsWith(prefix)) return;
+
+    const command = content.trim();
     const attachment = attachments.first();
-    const logMessage = `${createdAt}\nPublico (prefijo): ${userName} ${userID}\nmsg: ${command}`;
+    const logMessage = `${createdAt}\nPublico (hilo): ${userName} ${userID}\nmsg: ${command}`;
 
     // Función para enviar mensajes largos
     const sendLongMessage = async (msg) => {
@@ -29,7 +31,7 @@ module.exports = {
 
     // Manejo de errores
     const handleError = (err) => {
-      console.error("Error de comando (prefijo):", err.message);
+      console.error("Error de comando (hilos):", err.message);
       message.reply("> *Hubo un error ejecutando este comando.*");
     };
 
@@ -55,8 +57,8 @@ module.exports = {
       if (attachment) {
         console.log(`${logMessage}\n${attachment.url}`);
         const imgResponse = await imageVision(
-          userID,
-          userName,
+          threadID,
+          threadName,
           command,
           attachment.url
         );
@@ -67,7 +69,12 @@ module.exports = {
         const finalCommand = referencedMessageContent
           ? `${referencedMessageContent} ${command}`
           : command;
-        const textResponse = await textReq(userID, userName, finalCommand);
+        const textResponse = await textReq(
+          threadID,
+          threadName,
+          finalCommand,
+          true
+        );
         textResponse
           ? await sendLongMessage(textResponse)
           : handleError(new Error("Error procesando el texto"));
