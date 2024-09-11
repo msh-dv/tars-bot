@@ -1,4 +1,5 @@
 const imageModel = require("../../modules/openai/imageModel");
+const { getUser } = require("../../modules/users/usersHistory");
 const {
   SlashCommandBuilder,
   EmbedBuilder,
@@ -48,10 +49,13 @@ module.exports = {
       return await interaction.editReply("> *Acceso limitado por el momento*");
     }
 
+    const userData = getUser(userID, userName);
+    const userModel = userData.ImageModel;
+
     try {
       console.log(`${date}\nImagen: ${userName} ${userID}\nprompt: ${prompt}`);
 
-      let model = interaction.options.getString("model") || "dall-e-2";
+      let model = interaction.options.getString("model") || userModel;
       let size = interaction.options.getString("size") || "1024x1024";
 
       if (model == "dall-e-2" && (size == "1792x1024" || size == "1024x1792")) {
