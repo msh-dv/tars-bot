@@ -20,7 +20,7 @@ module.exports = {
         "https://msh-dv.github.io/tars-website/images/profile-picture.png"
       )
       .addFields({
-        name: `ts `,
+        name: `ts mensaje`,
         value: "Prefijo para chat, similar a /chat y /priv",
       })
       .setTimestamp();

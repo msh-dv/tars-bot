@@ -1,30 +1,49 @@
-//Comando para crear hilos en canales con temas especificos sin necesidad de usar prefijos/comandos para
-//llamar al modulo de generacion de texto
+const {
+  SlashCommandBuilder,
+  ThreadAutoArchiveDuration,
+} = require("discord.js");
 
-// const textReq = require("../../modules/openai/textModel");
-// const imageVision = require("../../modules/openai/imageVision");
-const { SlashCommandBuilder } = require("discord.js");
+const { createThread } = require("../../modules/threads/threadsHistory");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("topic")
     .setDescription(
-      "Genera un hilo separado del canal para un tema especifico."
+      "Genera un hilo separado del canal para un tema específico."
     )
     .addStringOption((option) =>
-      option.setName("nombre").setDescription("Nombre del hilo.")
+      option
+        .setName("nombre")
+        .setDescription("Nombre del hilo.")
+        .setMaxLength(100)
     ),
 
   async execute(interaction) {
-    // const mensaje = interaction.options.getString("mensaje");
-    // const userName = interaction.member.displayName || "anon";
-    // const userID = interaction.member.id || "none";
-    // const date = interaction.createdAt;
+    const userID = interaction.member.id || "none";
+    const userName = interaction.member.displayName || "none";
+    const threadName =
+      interaction.options.getString("nombre") || `${userName} conversation`;
 
     try {
+      const replyMessage = await interaction.reply({
+        content: `Nuevo hilo de conversación creado: **${threadName}**, para enviar un mensaje sin que lo lea el bot, usa ;;antes del mensaje`,
+        fetchReply: true,
+      });
+
+      const thread = await replyMessage.startThread({
+        name: threadName,
+        autoArchiveDuration: ThreadAutoArchiveDuration.OneDay,
+        reason: "Nueva conversación",
+      });
+      console.log(`Nuevo hilo creado: ${threadName}`);
+
+      createThread(thread.id, thread.name);
+
+      if (thread.joinable) await thread.join();
+      await thread.members.add(userID);
     } catch (err) {
       console.error("Error de comando (thread):", err.message);
-      await interaction.editReply(`> *Hubo un error ejecutando este comando*`);
+      await interaction.editReply("> *Hubo un error ejecutando este comando*");
     }
   },
 };
