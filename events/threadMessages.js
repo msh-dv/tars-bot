@@ -2,6 +2,10 @@ const textReq = require("../modules/openai/textModel");
 const imageVision = require("../modules/openai/imageVision");
 const { isThreadInHistory } = require("../modules/threads/threadsHistory");
 
+const recentMessages = new Map();
+const TIME_FRAME = 1000;
+const MAX_MESSAGES = 2;
+
 module.exports = {
   name: "messageCreate",
   once: false,
@@ -15,7 +19,21 @@ module.exports = {
 
     if (!channel.isThread() || isBot || !isThreadInHistory(threadID)) return;
     const prefix = "ts ";
-    if (contentLower.startsWith(prefix)) return;
+    if (content.toLowerCase().startsWith(prefix)) return;
+
+    const now = Date.now();
+    const messageHistory = recentMessages.get(userID) || [];
+    const recentMessagesCount = messageHistory.filter(
+      (timestamp) => now - timestamp < TIME_FRAME
+    ).length;
+
+    if (recentMessagesCount >= MAX_MESSAGES) {
+      console.log(`Usuario ${userName} ha enviado demasiados mensajes.`);
+      return;
+    }
+
+    messageHistory.push(now);
+    recentMessages.set(userID, messageHistory);
 
     const command = content.trim();
     const attachment = attachments.first();
@@ -50,7 +68,6 @@ module.exports = {
 
     try {
       console.log(logMessage);
-
       await channel.sendTyping();
 
       if (attachment) {

@@ -9,9 +9,9 @@ module.exports = {
       content: "Pinging...",
       fetchReply: true,
     });
-    const latencia = `\nLatencia: ${sent.createdTimestamp - interaction.createdTimestamp}ms`;
-    interaction.editReply(
-      `Pong! ${latencia}`
-    );
+    const latencia = `\nLatencia: ${
+      sent.createdTimestamp - interaction.createdTimestamp
+    }ms`;
+    interaction.editReply(`Pong! ${latencia}`);
   },
 };

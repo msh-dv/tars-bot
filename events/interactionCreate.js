@@ -15,7 +15,9 @@ module.exports = {
     const userName = interaction.member.displayName || "anon";
     const userID = interaction.member.id || "none";
     const userData = getUser(userID, userName);
-    // Revisar si la interaccion es un comando
+
+    const { cooldowns } = interaction.client;
+
     if (interaction.isChatInputCommand()) {
       const command = interaction.client.commands.get(interaction.commandName);
 
@@ -25,6 +27,33 @@ module.exports = {
         );
         return;
       }
+      if (!cooldowns.has(command.data.name)) {
+        cooldowns.set(command.data.name, new Map());
+      }
+
+      const now = Date.now();
+      const timestamps = cooldowns.get(command.data.name);
+      const defaultCooldownDuration = 1;
+      const cooldownAmount =
+        (command.cooldown ?? defaultCooldownDuration) * 1000;
+
+      if (timestamps.has(interaction.user.id)) {
+        const expirationTime =
+          timestamps.get(interaction.user.id) + cooldownAmount;
+        if (now < expirationTime) {
+          const timeLeft = (expirationTime - now) / 1000;
+          return interaction.reply({
+            content: `¡Debes esperar ${timeLeft.toFixed(
+              1
+            )} segundos antes de usar este comando de nuevo!`,
+            ephemeral: true,
+          });
+        }
+      }
+
+      // Establece el nuevo timestamp para el usuario
+      timestamps.set(interaction.user.id, now);
+      setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
       try {
         await command.execute(interaction);
@@ -42,7 +71,6 @@ module.exports = {
           });
         }
       }
-      // Revisar si la interaccion es un elemento de seleccion multiple
     } else if (interaction.isStringSelectMenu()) {
       const select = interaction;
       const interactionID = select.customId;
@@ -56,7 +84,6 @@ module.exports = {
         return;
       }
 
-      // TODO: Completar el envio de datos
       switch (interactionID) {
         case "textModels":
           await interaction.reply({
@@ -151,8 +178,6 @@ module.exports = {
           ephemeral: true,
         });
       }
-
-      // TODO:corregir el orden de name y id
 
       userData.setNewUsername(nuevoUsername);
       userData.setNewInstructions(nuevasInstrucciones);
