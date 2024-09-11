@@ -11,6 +11,7 @@ async function textVision(id, name, message, attachment, isThread = false) {
   try {
     const result = await moderation(message);
     const userInstance = getUser(id, name);
+    const threadInstance = getThread(id, name);
     const ext = ["png", "jpeg", "jpg", "gif", "webp"];
     const filename = attachment.split("?")[0];
     const fileExt = filename.split(".").pop().toLowerCase();
@@ -19,32 +20,6 @@ async function textVision(id, name, message, attachment, isThread = false) {
       console.log(result.categories);
       console.log(result.category_scores);
       return false;
-    }
-
-    if (isThread) {
-      const threadInstance = getThread(id, name);
-      threadInstance.addMessage({
-        role: "user",
-        content: [
-          { type: "text", text: message },
-          { type: "image_url", image_url: { url: `${attachment}` } },
-        ],
-      });
-
-      const history = threadInstance.getFullHistory();
-      const threadModel = threadInstance.TextModel;
-
-      const completion = await openai.chat.completions.create({
-        messages: history,
-        model: threadModel,
-        max_tokens: 500,
-      });
-
-      const chatCompletion = completion.choices[0].message.content;
-
-      threadInstance.addMessage({ role: "assistant", content: chatCompletion });
-
-      return chatCompletion;
     }
 
     if (ext.includes(fileExt)) {
@@ -57,6 +32,34 @@ async function textVision(id, name, message, attachment, isThread = false) {
     // TODO: Integrar el módulo textModel
 
     try {
+      if (isThread) {
+        threadInstance.addMessage({
+          role: "user",
+          content: [
+            { type: "text", text: message },
+            { type: "image_url", image_url: { url: `${attachment}` } },
+          ],
+        });
+
+        const history = threadInstance.getFullHistory();
+        const threadModel = threadInstance.TextModel;
+
+        const completion = await openai.chat.completions.create({
+          messages: history,
+          model: threadModel,
+          max_tokens: 500,
+        });
+
+        const chatCompletion = completion.choices[0].message.content;
+
+        threadInstance.addMessage({
+          role: "assistant",
+          content: chatCompletion,
+        });
+
+        return chatCompletion;
+      }
+
       userInstance.addMessage({
         role: "user",
         content: [
@@ -80,6 +83,7 @@ async function textVision(id, name, message, attachment, isThread = false) {
     } catch (error) {
       console.error(date, "Error de llamada Image Vision:", error.message);
       //Elimiar resgistro erroneo del historial para evitar errores
+      threadInstance.dynamicHistory.splice(-2, 2);
       userInstance.dynamicHistory.splice(-2, 2);
       return "> *Ocurrio un error con el comando, archivo corrupto o extension incorrecta.*";
     }

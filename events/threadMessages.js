@@ -19,7 +19,12 @@ module.exports = {
 
     if (!channel.isThread() || isBot || !isThreadInHistory(threadID)) return;
     const prefix = "ts ";
-    if (content.toLowerCase().startsWith(prefix)) return;
+    const noResponse = ";;";
+    if (
+      content.toLowerCase().startsWith(prefix) ||
+      content.toLowerCase().startsWith(noResponse)
+    )
+      return;
 
     const now = Date.now();
     const messageHistory = recentMessages.get(userID) || [];

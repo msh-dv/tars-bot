@@ -26,7 +26,7 @@ module.exports = {
 
     try {
       const replyMessage = await interaction.reply({
-        content: `Creando un nuevo hilo **${threadName}**...`,
+        content: `Nuevo hilo de conversación creado: **${threadName}**, para enviar un mensaje sin que lo lea el bot, usa ;;antes del mensaje`,
         fetchReply: true,
       });
 
@@ -35,15 +35,12 @@ module.exports = {
         autoArchiveDuration: ThreadAutoArchiveDuration.OneDay,
         reason: "Nueva conversación",
       });
+      console.log(`Nuevo hilo creado: ${threadName}`);
 
       createThread(thread.id, thread.name);
 
       if (thread.joinable) await thread.join();
       await thread.members.add(userID);
-
-      await interaction.editReply(
-        `**Nuevo hilo de conversación creado**: ${threadName}.`
-      );
     } catch (err) {
       console.error("Error de comando (thread):", err.message);
       await interaction.editReply("> *Hubo un error ejecutando este comando*");
