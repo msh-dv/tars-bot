@@ -59,8 +59,7 @@ module.exports = {
             await interaction.editReply(`${response}`);
           }
         } else {
-          await interaction.editReply(`> *This message violates our usage policies.* 
-      > *Este mensaje inflige nuestras politicas de uso.*`);
+          await interaction.editReply("Error procesando el texto");
         }
       }
     } catch (err) {

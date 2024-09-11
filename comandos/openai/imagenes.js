@@ -1,10 +1,15 @@
 const imageModel = require("../../modules/openai/imageModel");
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  AttachmentBuilder,
+} = require("discord.js");
+const axios = require("axios");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("imagine")
-    .setDescription("Genera imagenes con DALL-E-3")
+    .setDescription("Genera imagenes con modelos como DALL-E-3")
     .addStringOption((option) =>
       option
         .setName("prompt")
@@ -58,22 +63,41 @@ module.exports = {
       const response = await imageModel(prompt, model, size);
 
       if (response) {
-        const exampleEmbed = new EmbedBuilder()
-          .setColor("White")
-          .setTitle("Image generation with DALL-E")
-          .addFields({ name: "Prompt:", value: `${prompt}` })
-          .addFields({ name: "Size:", value: `${size}` })
-          .setImage(`${response}`)
-          .setTimestamp()
-          .setFooter({
-            text: `Generated with ${model.toUpperCase()}`,
-            iconURL:
-              "https://msh-dv.github.io/tars-website/images/profile-picture.png",
+        try {
+          console.log("Descargando imagen");
+          const imageResponse = await axios.get(response, {
+            responseType: "arraybuffer",
           });
-        await interaction.editReply({ embeds: [exampleEmbed] });
+          const imageBuffer = Buffer.from(imageResponse.data, "binary");
+
+          const attachment = new AttachmentBuilder(imageBuffer, {
+            name: "imagen.png",
+          });
+
+          const exampleEmbed = new EmbedBuilder()
+            .setColor("White")
+            .setTitle("Image generation")
+            .addFields({ name: "Prompt:", value: `${prompt}` })
+            .addFields({ name: "Size:", value: `${size}` })
+            .setImage("attachment://imagen.png")
+            .setTimestamp()
+            .setFooter({
+              text: `Generated with ${model.toUpperCase()}`,
+              iconURL:
+                "https://msh-dv.github.io/tars-website/images/profile-picture.png",
+            });
+          await interaction.editReply({
+            embeds: [exampleEmbed],
+            files: [attachment],
+          });
+        } catch (error) {
+          console.error("Error Descargandola imagen:", err.message);
+          await interaction.editReply({
+            content: "> Hubo un error procesando la imagen",
+          });
+        }
       } else {
-        await interaction.editReply(`> *This message violates our usage policies.* 
-      > *Este mensaje inflige nuestras politicas de uso.*`);
+        await interaction.editReply("> Hubo un error procesando la imagen");
       }
     } catch (err) {
       console.error("Error de comando(Imagen):", err.message);
