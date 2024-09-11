@@ -60,7 +60,6 @@ module.exports = {
           command,
           attachment.url
         );
-<<<<<<< HEAD
         if (imgResponse) {
           if (imgResponse.length > 2000) {
             const firstPart = imgResponse.substring(0, 2000);
@@ -76,11 +75,9 @@ module.exports = {
             .reply("> *Hubo un error ejecutando este comando.*")
             .catch((err) => console.error(err));
         }
-=======
         imgResponse
           ? await sendLongMessage(imgResponse)
           : handleError(new Error("Error procesando la imagen"));
->>>>>>> exp
       } else {
         const finalCommand = referencedMessageContent
           ? `${referencedMessageContent} ${command}`
