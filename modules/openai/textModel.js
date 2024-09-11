@@ -1,6 +1,6 @@
 const OpenAI = require("openai");
 const { getUser } = require("../users/usersHistory");
-const getThread = require("../threads/threadsHistory");
+const { getThread } = require("../threads/threadsHistory");
 const moderation = require("../moderation/moderation");
 require("dotenv").config();
 

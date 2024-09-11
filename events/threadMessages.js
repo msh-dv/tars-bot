@@ -1,4 +1,6 @@
 const textReq = require("../modules/openai/textModel");
+const imageVision = require("../modules/openai/imageVision");
+const { isThreadInHistory } = require("../modules/threads/threadsHistory");
 
 module.exports = {
   name: "messageCreate",
@@ -11,7 +13,7 @@ module.exports = {
     const threadID = message.channel.id;
     const threadName = message.channel.name;
 
-    if (!channel.isThread() || isBot) return;
+    if (!channel.isThread() || isBot || !isThreadInHistory(threadID)) return;
     const prefix = "ts ";
     if (contentLower.startsWith(prefix)) return;
 
@@ -19,7 +21,6 @@ module.exports = {
     const attachment = attachments.first();
     const logMessage = `${createdAt}\nPublico (hilo): ${userName} ${userID}\nmsg: ${command}`;
 
-    // Función para enviar mensajes largos
     const sendLongMessage = async (msg) => {
       if (msg.length > 2000) {
         await channel.send(msg.slice(0, 2000));
@@ -29,13 +30,11 @@ module.exports = {
       }
     };
 
-    // Manejo de errores
     const handleError = (err) => {
       console.error("Error de comando (hilos):", err.message);
       message.reply("> *Hubo un error ejecutando este comando.*");
     };
 
-    // Manejo de mensajes referenciados
     let referencedMessageContent = null;
     if (reference) {
       try {
@@ -60,7 +59,8 @@ module.exports = {
           threadID,
           threadName,
           command,
-          attachment.url
+          attachment.url,
+          true
         );
         imgResponse
           ? await sendLongMessage(imgResponse)
@@ -69,10 +69,11 @@ module.exports = {
         const finalCommand = referencedMessageContent
           ? `${referencedMessageContent} ${command}`
           : command;
+        const usernameCommand = `${userName}:${finalCommand}`;
         const textResponse = await textReq(
           threadID,
           threadName,
-          finalCommand,
+          usernameCommand,
           true
         );
         textResponse

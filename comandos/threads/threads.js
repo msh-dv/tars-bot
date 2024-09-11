@@ -1,50 +1,52 @@
-//Comando para crear hilos en canales con temas especificos sin necesidad de usar prefijos/comandos para
-//llamar al modulo de generacion de texto
-
-// const textReq = require("../../modules/openai/textModel");
-// const imageVision = require("../../modules/openai/imageVision");
 const {
   SlashCommandBuilder,
   ThreadAutoArchiveDuration,
 } = require("discord.js");
 
+const { createThread } = require("../../modules/threads/threadsHistory");
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("topic")
     .setDescription(
-      "Genera un hilo separado del canal para un tema especifico."
+      "Genera un hilo separado del canal para un tema específico."
     )
     .addStringOption((option) =>
       option
         .setName("nombre")
         .setDescription("Nombre del hilo.")
-        .setMaxLength(1_00)
+        .setMaxLength(100)
     ),
 
   async execute(interaction) {
     const userID = interaction.member.id || "none";
-    // const date = interaction.createdAt;
-
-    const threadName = interaction.options.getString("nombre");
-    const thread = await interaction.channel.threads.create({
-      name: `${threadName}`,
-      autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
-      reason: "Hilo del bot",
-    });
-
-    const threadToJoin = interaction.channel.threads.cache.find(
-      (x) => x.name === `${threadName}`
-    );
-    if (threadToJoin.joinable) await thread.join();
-    await thread.members.add(`${userID}`);
-
-    console.log(`Created thread: ${thread.name}`);
-    await interaction.reply(`Nueva conversacion creada ${threadName}`);
+    const userName = interaction.member.displayName || "none";
+    const threadName =
+      interaction.options.getString("nombre") || `${userName} conversation`;
 
     try {
+      const replyMessage = await interaction.reply({
+        content: `Creando un nuevo hilo **${threadName}**...`,
+        fetchReply: true,
+      });
+
+      const thread = await replyMessage.startThread({
+        name: threadName,
+        autoArchiveDuration: ThreadAutoArchiveDuration.OneDay,
+        reason: "Nueva conversación",
+      });
+
+      createThread(thread.id, thread.name);
+
+      if (thread.joinable) await thread.join();
+      await thread.members.add(userID);
+
+      await interaction.editReply(
+        `**Nuevo hilo de conversación creado**: ${threadName}.`
+      );
     } catch (err) {
       console.error("Error de comando (thread):", err.message);
-      await interaction.editReply(`> *Hubo un error ejecutando este comando*`);
+      await interaction.editReply("> *Hubo un error ejecutando este comando*");
     }
   },
 };

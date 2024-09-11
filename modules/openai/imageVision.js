@@ -1,12 +1,13 @@
 const OpenAI = require("openai");
 const { getUser } = require("../users/usersHistory");
+const { getThread } = require("../threads/threadsHistory");
 const moderation = require("../moderation/moderation");
 require("dotenv").config();
 
 const openai = new OpenAI();
 const date = new Date();
 
-async function textVision(id, name, message, attachment) {
+async function textVision(id, name, message, attachment, isThread = false) {
   try {
     const result = await moderation(message);
     const userInstance = getUser(id, name);
@@ -18,6 +19,32 @@ async function textVision(id, name, message, attachment) {
       console.log(result.categories);
       console.log(result.category_scores);
       return false;
+    }
+
+    if (isThread) {
+      const threadInstance = getThread(id, name);
+      threadInstance.addMessage({
+        role: "user",
+        content: [
+          { type: "text", text: message },
+          { type: "image_url", image_url: { url: `${attachment}` } },
+        ],
+      });
+
+      const history = threadInstance.getFullHistory();
+      const threadModel = threadInstance.TextModel;
+
+      const completion = await openai.chat.completions.create({
+        messages: history,
+        model: threadModel,
+        max_tokens: 500,
+      });
+
+      const chatCompletion = completion.choices[0].message.content;
+
+      threadInstance.addMessage({ role: "assistant", content: chatCompletion });
+
+      return chatCompletion;
     }
 
     if (ext.includes(fileExt)) {
