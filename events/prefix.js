@@ -9,7 +9,7 @@ module.exports = {
     const { content, attachments, author, createdAt, channel, reference } =
       message;
     const { id: userID, displayName: userName, bot: isBot } = author;
-    contentLower = content.toLowerCase();
+    const contentLower = content.toLowerCase();
 
     if (!contentLower.startsWith(prefix) || isBot) return;
 
@@ -19,12 +19,11 @@ module.exports = {
 
     // Función para enviar mensajes largos
     const sendLongMessage = async (msg) => {
-      if (msg.length > 2000) {
+      while (msg.length > 2000) {
         await channel.send(msg.slice(0, 2000));
-        await channel.send(msg.slice(2000));
-      } else {
-        await channel.send(msg);
+        msg = msg.slice(2000);
       }
+      await channel.send(msg);
     };
 
     // Manejo de errores
@@ -34,14 +33,17 @@ module.exports = {
     };
 
     // Manejo de mensajes referenciados
-    let referencedMessageContent = null;
+    let referencedMessageContent = "";
+    let referencedAttachmentUrl = null;
     if (reference) {
       try {
         const referencedMessage = await channel.messages.fetch(
           reference.messageId
         );
         referencedMessageContent = referencedMessage.content;
-        console.log(`Mensaje referenciado: ${referencedMessageContent}`);
+        if (referencedMessage.attachments.size > 0) {
+          referencedAttachmentUrl = referencedMessage.attachments.first().url;
+        }
       } catch (err) {
         console.error("Error al obtener el mensaje referenciado:", err.message);
       }
@@ -52,7 +54,21 @@ module.exports = {
 
       await channel.sendTyping();
 
-      if (attachment) {
+      if (referencedAttachmentUrl) {
+        console.log(`${logMessage}\n${referencedAttachmentUrl}`);
+        const finalCommand = `${referencedMessageContent} ${command}`.trim();
+        const imgResponse = await imageVision(
+          userID,
+          userName,
+          finalCommand,
+          referencedAttachmentUrl
+        );
+        if (imgResponse) {
+          await sendLongMessage(imgResponse);
+        } else {
+          handleError(new Error("Error procesando la imagen referenciada"));
+        }
+      } else if (attachment) {
         console.log(`${logMessage}\n${attachment.url}`);
         const imgResponse = await imageVision(
           userID,
@@ -61,31 +77,18 @@ module.exports = {
           attachment.url
         );
         if (imgResponse) {
-          if (imgResponse.length > 2000) {
-            const firstPart = imgResponse.substring(0, 2000);
-            const secondPart = imgResponse.substring(2000);
-
-            message.channel.send(firstPart);
-            message.channel.send(secondPart);
-          } else {
-            message.channel.send(imgResponse);
-          }
+          await sendLongMessage(imgResponse);
         } else {
-          message
-            .reply("> *Hubo un error ejecutando este comando.*")
-            .catch((err) => console.error(err));
+          handleError(new Error("Error procesando la imagen adjunta"));
         }
-        imgResponse
-          ? await sendLongMessage(imgResponse)
-          : handleError(new Error("Error procesando la imagen"));
       } else {
-        const finalCommand = referencedMessageContent
-          ? `${referencedMessageContent} ${command}`
-          : command;
+        const finalCommand = `${referencedMessageContent} ${command}`.trim();
         const textResponse = await textReq(userID, userName, finalCommand);
-        textResponse
-          ? await sendLongMessage(textResponse)
-          : handleError(new Error("Error procesando el texto"));
+        if (textResponse) {
+          await sendLongMessage(textResponse);
+        } else {
+          handleError(new Error("Error procesando el texto"));
+        }
       }
     } catch (err) {
       handleError(err);
