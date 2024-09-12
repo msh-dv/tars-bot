@@ -2,7 +2,7 @@ class Thread {
   constructor(id, name) {
     this.id = id;
     this.name = name;
-    this.maxHistory = 15;
+    this.maxHistory = 17;
     this.TextModel = "gpt-4o-mini";
     this.ImageModel = "dall-e-2";
     this.AudioModel = "tts-1";
@@ -11,10 +11,6 @@ class Thread {
     this.fixedHistory = [
       { role: "system", content: this.instrucciones },
       { role: "system", content: `The thread name is ${this.name}` },
-      {
-        role: "system",
-        content: `Your current text model is ${this.TextModel}`,
-      },
       {
         role: "system",
         content:

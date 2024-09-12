@@ -51,7 +51,6 @@ module.exports = {
         }
       }
 
-      // Establece el nuevo timestamp para el usuario
       timestamps.set(interaction.user.id, now);
       setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 

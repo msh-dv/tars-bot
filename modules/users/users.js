@@ -11,10 +11,6 @@ class User {
     this.fixedHistory = [
       { role: "system", content: this.instrucciones },
       { role: "system", content: `The user name is ${this.name}` },
-      {
-        role: "system",
-        content: `Your current text model is ${this.TextModel}`,
-      },
     ];
     this.dynamicHistory = [];
 
