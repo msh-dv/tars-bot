@@ -2,7 +2,7 @@ class Thread {
   constructor(id, name) {
     this.id = id;
     this.name = name;
-    this.maxHistory = 17;
+    this.maxHistory = 10;
     this.TextModel = "gpt-4o-mini";
     this.ImageModel = "dall-e-2";
     this.AudioModel = "tts-1";
