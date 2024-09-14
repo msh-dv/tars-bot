@@ -31,7 +31,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 (async () => {
   try {
     console.log(
-      `Started refreshing ${commands.length} application (/) commands.`
+      `Started refreshing ${commands.length} application (/) commands in ${clientId}.`
     );
 
     const data = await rest.put(Routes.applicationCommands(clientId), {
