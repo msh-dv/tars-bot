@@ -30,6 +30,7 @@ async function textVision(id, name, message, attachment, isThread = false) {
     }
 
     // TODO: Integrar el módulo textModel
+    // TODO: Corregir los modelos de vision (verificar si el modelo es multimodal)
 
     try {
       if (isThread) {
@@ -42,11 +43,10 @@ async function textVision(id, name, message, attachment, isThread = false) {
         });
 
         const history = threadInstance.getFullHistory();
-        const threadModel = threadInstance.TextModel;
 
         const completion = await openai.chat.completions.create({
           messages: history,
-          model: threadModel,
+          model: "gpt-4o-mini",
           max_tokens: 500,
         });
 

@@ -16,13 +16,30 @@ module.exports = {
         .setName("nombre")
         .setDescription("Nombre del hilo.")
         .setMaxLength(100)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("modelo")
+        .setDescription("Modelo de texto (incluye analisis de imagenes).")
+        .addChoices(
+          { name: "GPT-4o-mini", value: "gpt-4o-mini" },
+          { name: "GPT-4o", value: "gpt-4o" }
+        )
     ),
-
   async execute(interaction) {
     const userID = interaction.member.id || "none";
     const userName = interaction.member.displayName || "none";
+    const threadModel =
+      interaction.options.getString("modelo") || "gpt-4o-mini";
     const threadName =
-      interaction.options.getString("nombre") || `${userName} conversation`;
+      interaction.options.getString("nombre") || `${userName} | ${threadModel}`;
+
+    if (threadModel == "gpt-4o") {
+      await interaction.reply({
+        content: `Esta opcion solo esta disponible para usuarios premium.`,
+        ephemeral: true,
+      });
+    }
 
     try {
       const replyMessage = await interaction.reply({
