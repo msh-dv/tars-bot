@@ -16,6 +16,7 @@ module.exports = {
         .setName("nombre")
         .setDescription("Nombre del hilo.")
         .setMaxLength(100)
+        .setRequired(false)
     )
     .addStringOption((option) =>
       option
@@ -25,6 +26,7 @@ module.exports = {
           { name: "GPT-4o-mini", value: "gpt-4o-mini" },
           { name: "GPT-4o", value: "gpt-4o" }
         )
+        .setRequired(false)
     ),
   async execute(interaction) {
     const userID = interaction.member.id || "none";
@@ -39,6 +41,7 @@ module.exports = {
         content: `Esta opcion solo esta disponible para usuarios premium.`,
         ephemeral: true,
       });
+      return;
     }
 
     try {
