@@ -5,7 +5,6 @@ const moderation = require("../moderation/moderation");
 require("dotenv").config();
 
 const openai = new OpenAI();
-const date = new Date();
 
 async function textVision(id, name, message, attachment, isThread = false) {
   try {
@@ -15,6 +14,7 @@ async function textVision(id, name, message, attachment, isThread = false) {
     const ext = ["png", "jpeg", "jpg", "gif", "webp"];
     const filename = attachment.split("?")[0];
     const fileExt = filename.split(".").pop().toLowerCase();
+    const date = new Date();
 
     if (result.flagged) {
       console.log(result.categories);

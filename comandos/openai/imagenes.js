@@ -46,7 +46,9 @@ module.exports = {
     const prompt = interaction.options.getString("prompt");
 
     if (userID != "725826170519552172") {
-      return await interaction.editReply("> *Acceso limitado por el momento*");
+      return await interaction.editReply(
+        "> *Acceso limitado por el momento solo para *testers**"
+      );
     }
 
     const userData = getUser(userID, userName);

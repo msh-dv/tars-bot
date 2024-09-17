@@ -28,7 +28,10 @@ module.exports = {
 
     // Manejo de errores
     const handleError = (err) => {
-      console.error("Error de comando (prefijo):", err.message);
+      console.error(
+        `Error de comando (prefijo) ${createdAt} : ${userName} : ${userID} : ${content}`,
+        err.message
+      );
       message.reply("> *Hubo un error ejecutando este comando.*");
     };
 
