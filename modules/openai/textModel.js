@@ -8,6 +8,8 @@ const openai = new OpenAI();
 
 async function textModel(id, name, message, isThread = false) {
   const date = new Date();
+  const threadInstance = getThread(id, name);
+  const userInstance = getUser(id, name);
   try {
     const result = await moderation(message);
 
@@ -18,7 +20,6 @@ async function textModel(id, name, message, isThread = false) {
     }
 
     if (isThread) {
-      const threadInstance = getThread(id, name);
       threadInstance.addMessage({ role: "user", content: message });
 
       const history = threadInstance.getFullHistory();
@@ -37,8 +38,6 @@ async function textModel(id, name, message, isThread = false) {
       return chatCompletion;
     }
 
-    const userInstance = getUser(id, name);
-
     userInstance.addMessage({ role: "user", content: message });
 
     const history = userInstance.getFullHistory();
@@ -56,7 +55,8 @@ async function textModel(id, name, message, isThread = false) {
 
     return chatCompletion;
   } catch (error) {
-    userInstance.dynamicHistory.splice(-2, 2);
+    // userInstance.dynamicHistory.splice(-2, 2);
+    userInstance.wipeMemory();
     console.error(date, " Error de Openai (Texto): ", error.message);
     console.error(`${id} : ${name} : ${message}`);
   }

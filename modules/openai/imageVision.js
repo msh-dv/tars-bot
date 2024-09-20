@@ -7,15 +7,13 @@ require("dotenv").config();
 const openai = new OpenAI();
 
 async function textVision(id, name, message, attachment, isThread = false) {
+  const result = await moderation(message);
+  const userInstance = getUser(id, name);
+  const ext = ["png", "jpeg", "jpg", "gif", "webp"];
+  const filename = attachment.split("?")[0];
+  const fileExt = filename.split(".").pop().toLowerCase();
+  const date = new Date();
   try {
-    const result = await moderation(message);
-    const userInstance = getUser(id, name);
-    const threadInstance = getThread(id, name);
-    const ext = ["png", "jpeg", "jpg", "gif", "webp"];
-    const filename = attachment.split("?")[0];
-    const fileExt = filename.split(".").pop().toLowerCase();
-    const date = new Date();
-
     if (result.flagged) {
       console.log(result.categories);
       console.log(result.category_scores);
@@ -31,33 +29,45 @@ async function textVision(id, name, message, attachment, isThread = false) {
 
     // TODO: Integrar el módulo textModel
     // TODO: Corregir los modelos de vision (verificar si el modelo es multimodal)
+    // TODO: Solucionar el problema de los archivos corruptos en los hilos
 
     try {
       if (isThread) {
-        threadInstance.addMessage({
-          role: "user",
-          content: [
-            { type: "text", text: message },
-            { type: "image_url", image_url: { url: `${attachment}` } },
-          ],
-        });
+        const threadInstance = getThread(id, name);
+        try {
+          threadInstance.addMessage({
+            role: "user",
+            content: [
+              { type: "text", text: message },
+              { type: "image_url", image_url: { url: `${attachment}` } },
+            ],
+          });
 
-        const history = threadInstance.getFullHistory();
+          const history = threadInstance.getFullHistory();
+          const completion = await openai.chat.completions.create({
+            messages: history,
+            model: "gpt-4o-mini",
+            max_tokens: 500,
+          });
 
-        const completion = await openai.chat.completions.create({
-          messages: history,
-          model: "gpt-4o-mini",
-          max_tokens: 500,
-        });
+          const chatCompletion = completion.choices[0].message.content;
 
-        const chatCompletion = completion.choices[0].message.content;
+          threadInstance.addMessage({
+            role: "assistant",
+            content: chatCompletion,
+          });
 
-        threadInstance.addMessage({
-          role: "assistant",
-          content: chatCompletion,
-        });
-
-        return chatCompletion;
+          return chatCompletion;
+        } catch (error) {
+          console.error(
+            date,
+            "Error de llamada Image Vision (threads):",
+            error.message
+          );
+          //Elimiar resgistro erroneo del historial para evitar errores
+          threadInstance.wipeMemory();
+          return "> *Ocurrio un error con el comando, archivo corrupto o extension incorrecta.*";
+        }
       }
 
       userInstance.addMessage({
@@ -83,8 +93,8 @@ async function textVision(id, name, message, attachment, isThread = false) {
     } catch (error) {
       console.error(date, "Error de llamada Image Vision:", error.message);
       //Elimiar resgistro erroneo del historial para evitar errores
-      threadInstance.dynamicHistory.splice(-2, 2);
-      userInstance.dynamicHistory.splice(-2, 2);
+      // userInstance.dynamicHistory.splice(-2, 2);
+      userInstance.wipeMemory();
       return "> *Ocurrio un error con el comando, archivo corrupto o extension incorrecta.*";
     }
   } catch (error) {
