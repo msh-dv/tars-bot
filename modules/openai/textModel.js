@@ -13,6 +13,7 @@ async function textModel(id, name, message, isThread = false) {
   try {
     const result = await moderation(message);
 
+    // TODO: Separar modulo de moderacion
     if (result.flagged) {
       console.log(result.categories);
       console.log(result.category_scores);
@@ -55,7 +56,6 @@ async function textModel(id, name, message, isThread = false) {
 
     return chatCompletion;
   } catch (error) {
-    // userInstance.dynamicHistory.splice(-2, 2);
     userInstance.wipeMemory();
     console.error(date, " Error de Openai (Texto): ", error.message);
     console.error(`${id} : ${name} : ${message}`);
