@@ -14,6 +14,7 @@ for (const folder of commandFolders) {
     .readdirSync(commandsPath)
     .filter((file) => file.endsWith(".js"));
   for (const file of commandFiles) {
+    console.log(`Cargando ${file} en guilds.`);
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
     if ("data" in command && "execute" in command) {

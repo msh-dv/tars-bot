@@ -6,9 +6,9 @@ module.exports = {
   execute(client) {
     //Mostrar los servidores y usuarios totales como una actividad Watching
     const guilds = client.guilds;
+    const serverCount = guilds.cache.size;
+    const userCount = guilds.cache.reduce((a, g) => a + g.memberCount, 0);
     const showGuildUsersCount = () => {
-      const serverCount = guilds.cache.size;
-      const userCount = guilds.cache.reduce((a, g) => a + g.memberCount, 0);
       client.user.setPresence({
         activities: [
           {
@@ -25,5 +25,6 @@ module.exports = {
     setInterval(showGuildUsersCount, 600000);
 
     console.log(`Listo! logeado como: ${client.user.tag}`);
+    console.log(`Servidores: ${serverCount}, Usuarios: ${userCount}`);
   },
 };

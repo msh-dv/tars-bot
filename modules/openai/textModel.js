@@ -27,8 +27,9 @@ async function textModel(id, name, message, isThread = false) {
     instance.addMessage({ role: "assistant", content: response });
     return response;
   } catch (error) {
-    instance.dynamicHistory = backupHistory;
     console.error("Error de OpenAI (Texto):", error.message);
+    instance.dynamicHistory = backupHistory;
+    console.log("Restaurando historial.");
     return `> *Error procesando tu solicitud. Por favor, intenta de nuevo más tarde.*`;
   }
 }

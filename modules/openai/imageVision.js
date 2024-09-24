@@ -43,8 +43,9 @@ async function textVision(id, name, message, attachment, isThread = false) {
     instance.addMessage({ role: "assistant", content: response });
     return response;
   } catch (error) {
-    instance.dynamicHistory = backupHistory;
     console.error("Error de OpenAI (Imagen):", error.message);
+    instance.dynamicHistory = backupHistory;
+    console.log("Restaurando historial.");
     return `> *Archivo corrupto o con exptension incorrecta.*`;
   }
 }
