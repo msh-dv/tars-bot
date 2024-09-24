@@ -9,9 +9,11 @@ async function moderation(message) {
       input: message,
     });
 
-    const results = mod.results[0];
-
-    return results;
+    const result = mod.results[0];
+    if (result.flagged) {
+      console.log(result.categories, result.category_scores);
+    }
+    return result;
   } catch (error) {
     console.error("Error de Openai (moderacion): ", error.message);
   }

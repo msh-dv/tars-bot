@@ -24,17 +24,12 @@ module.exports = {
     const imagen = interaction.options.getAttachment("imagen") || false;
     const userName = interaction.member.displayName || "anon";
     const userID = interaction.member.id || "none";
-    const date = interaction.createdAt;
 
     try {
-      console.log(
-        `${date}\nPrivado (priv): ${userName} ${userID}\nmsg: ${mensaje}`
-      );
       await interaction.deferReply({ ephemeral: true });
       //Validando si se ha enviado una imagen
 
       if (imagen) {
-        console.log("Tipo:Imagen adjunta");
         const imgResponse = await imageVision(
           userID,
           userName,

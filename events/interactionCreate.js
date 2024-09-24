@@ -6,7 +6,7 @@ const {
   ActionRowBuilder,
 } = require("discord.js");
 
-const { getUser } = require("../modules/users/usersHistory");
+const { getUser } = require("../modules/conversations/conversationsHistory");
 const moderation = require("../modules/moderation/moderation");
 
 module.exports = {

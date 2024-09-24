@@ -3,7 +3,9 @@ const {
   ThreadAutoArchiveDuration,
 } = require("discord.js");
 
-const { createThread } = require("../../modules/threads/threadsHistory");
+const {
+  createThread,
+} = require("../../modules/conversations/conversationsHistory");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -55,7 +57,6 @@ module.exports = {
         autoArchiveDuration: ThreadAutoArchiveDuration.OneDay,
         reason: "Nueva conversación",
       });
-      console.log(`Nuevo hilo creado: ${threadName}`);
 
       createThread(thread.id, thread.name);
 

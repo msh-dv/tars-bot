@@ -1,64 +1,35 @@
-const OpenAI = require("openai");
-const { getUser } = require("../users/usersHistory");
-const { getThread } = require("../threads/threadsHistory");
+const { getUser, getThread } = require("../conversations/conversationsHistory");
+const generateCompletion = require("./generateCompletion");
 const moderation = require("../moderation/moderation");
-require("dotenv").config();
-
-const openai = new OpenAI();
 
 async function textModel(id, name, message, isThread = false) {
-  const date = new Date();
-  const threadInstance = getThread(id, name);
-  const userInstance = getUser(id, name);
+  function getInstance(isThread, id, name) {
+    if (isThread) {
+      return getThread(id, name);
+    } else {
+      return getUser(id, name);
+    }
+  }
+
+  const instance = getInstance(isThread, id, name);
+  const backupHistory = [...instance.dynamicHistory];
+
   try {
     const result = await moderation(message);
+    if (result.flagged)
+      return "> *Este mensaje infringe nuestras políticas de uso.*";
 
-    // TODO: Separar modulo de moderacion
-    if (result.flagged) {
-      console.log(result.categories);
-      console.log(result.category_scores);
-      return false;
-    }
+    instance.addMessage({ role: "user", content: message });
 
-    if (isThread) {
-      threadInstance.addMessage({ role: "user", content: message });
+    const history = instance.getFullHistory();
+    const response = await generateCompletion(history, instance.TextModel);
 
-      const history = threadInstance.getFullHistory();
-      const threadModel = threadInstance.TextModel;
-
-      const completion = await openai.chat.completions.create({
-        messages: history,
-        model: threadModel,
-        max_tokens: 500,
-      });
-
-      const chatCompletion = completion.choices[0].message.content;
-
-      threadInstance.addMessage({ role: "assistant", content: chatCompletion });
-
-      return chatCompletion;
-    }
-
-    userInstance.addMessage({ role: "user", content: message });
-
-    const history = userInstance.getFullHistory();
-    const userModel = userInstance.TextModel;
-
-    const completion = await openai.chat.completions.create({
-      messages: history,
-      model: userModel,
-      max_tokens: 500,
-    });
-
-    const chatCompletion = completion.choices[0].message.content;
-
-    userInstance.addMessage({ role: "assistant", content: chatCompletion });
-
-    return chatCompletion;
+    instance.addMessage({ role: "assistant", content: response });
+    return response;
   } catch (error) {
-    userInstance.wipeMemory();
-    console.error(date, " Error de Openai (Texto): ", error.message);
-    console.error(`${id} : ${name} : ${message}`);
+    instance.dynamicHistory = backupHistory;
+    console.error("Error de OpenAI (Texto):", error.message);
+    return `> *Error procesando tu solicitud. Por favor, intenta de nuevo más tarde.*`;
   }
 }
 

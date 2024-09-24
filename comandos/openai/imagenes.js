@@ -1,5 +1,5 @@
 const imageModel = require("../../modules/openai/imageModel");
-const { getUser } = require("../../modules/users/usersHistory");
+const { getUser } = require("../../modules/conversations/conversationsHistory");
 const {
   SlashCommandBuilder,
   EmbedBuilder,

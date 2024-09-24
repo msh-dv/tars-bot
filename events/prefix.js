@@ -15,7 +15,6 @@ module.exports = {
 
     const command = content.slice(prefix.length).trim();
     const attachment = attachments.first();
-    const logMessage = `${createdAt}\nPublico (prefijo): ${userName} ${userID}\nmsg: ${command}`;
 
     // Función para enviar mensajes largos
     const sendLongMessage = async (msg) => {
@@ -53,12 +52,10 @@ module.exports = {
     }
 
     try {
-      console.log(logMessage);
 
       await channel.sendTyping();
 
       if (referencedAttachmentUrl) {
-        console.log(`${logMessage}\n${referencedAttachmentUrl}`);
         const finalCommand = `${referencedMessageContent} ${command}`.trim();
         const imgResponse = await imageVision(
           userID,
@@ -72,7 +69,6 @@ module.exports = {
           handleError(new Error("Error procesando la imagen referenciada"));
         }
       } else if (attachment) {
-        console.log(`${logMessage}\n${attachment.url}`);
         const imgResponse = await imageVision(
           userID,
           userName,

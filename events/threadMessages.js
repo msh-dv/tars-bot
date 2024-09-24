@@ -1,6 +1,8 @@
 const textReq = require("../modules/openai/textModel");
 const imageVision = require("../modules/openai/imageVision");
-const { isThreadInHistory } = require("../modules/threads/threadsHistory");
+const {
+  isThreadInHistory,
+} = require("../modules/conversations/conversationsHistory");
 
 const recentMessages = new Map();
 const TIME_FRAME = 1000;
@@ -10,8 +12,7 @@ module.exports = {
   name: "messageCreate",
   once: false,
   async execute(message) {
-    const { content, attachments, author, createdAt, channel, reference } =
-      message;
+    const { content, attachments, author, channel, reference } = message;
     const { id: userID, displayName: userName, bot: isBot } = author;
 
     const threadID = message.channel.id;
@@ -33,7 +34,9 @@ module.exports = {
     ).length;
 
     if (recentMessagesCount >= MAX_MESSAGES) {
-      console.log(`Usuario ${userName} ha enviado demasiados mensajes.`);
+      message.reply(
+        "> *Estás enviando mensajes muy rápido. Por favor, espera unos segundos.*"
+      );
       return;
     }
 
@@ -42,7 +45,6 @@ module.exports = {
 
     const command = content.trim();
     const attachment = attachments.first();
-    const logMessage = `${createdAt}\nPublico (hilo): ${userName} ${userID}\nmsg: ${command}`;
 
     const sendLongMessage = async (msg) => {
       if (msg.length > 2000) {
@@ -54,7 +56,7 @@ module.exports = {
     };
 
     const handleError = (err) => {
-      console.error("Error de comando (hilos):", err.message);
+      console.error("Error de comando (hilos):", err);
       message.reply("> *Hubo un error ejecutando este comando.*");
     };
 
@@ -75,10 +77,8 @@ module.exports = {
     }
 
     try {
-      console.log(logMessage);
       await channel.sendTyping();
       if (referencedAttachmentUrl) {
-        console.log(`${logMessage}\n${referencedAttachmentUrl}`);
         const finalCommand = `${referencedMessageContent} ${command}`.trim();
         const imgResponse = await imageVision(
           userID,
@@ -92,7 +92,6 @@ module.exports = {
           handleError(new Error("Error procesando la imagen referenciada"));
         }
       } else if (attachment) {
-        console.log(`${logMessage}\n${attachment.url}`);
         const imgResponse = await imageVision(
           threadID,
           threadName,

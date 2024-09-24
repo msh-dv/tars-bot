@@ -1,19 +1,14 @@
-class Thread {
+class Conversation {
   constructor(id, name) {
     this.id = id;
     this.name = name;
-    this.maxHistory = 10;
+    this.maxHistory = 8;
     this.TextModel = "gpt-4o-mini";
     this.instrucciones =
-      "You are TARS, a Discord bot designed to provide creative and detailed responses on any topic. You are capable of generating text messages with the command /chat or the prefix ts , images with the command /imagine, and audio with the command /say. If the user asks for past messages, you should respond affirmatively. The user language response has to be the same as the input. ";
+      "You are TARS, a Discord bot designed to provide creative and detailed responses on any topic. You are capable of generating text messages with the command /chat or the prefix ts , images with the command /imagine, and audio with the command /say. If the user asks for past messages, you should respond affirmatively. The user language response has to be the same as the input.";
     this.fixedHistory = [
       { role: "system", content: this.instrucciones },
-      { role: "system", content: `The thread name is ${this.name}` },
-      {
-        role: "system",
-        content:
-          "Messages from users will have the user's name before a colon ':'. Recognize this as the user's name, but your responses should not follow this format and only provide the appropriate reply.",
-      },
+      { role: "system", content: `The user name is ${this.name}` },
     ];
     this.dynamicHistory = [];
   }
@@ -35,7 +30,7 @@ class Thread {
       "You are TARS, a Discord bot designed to provide creative and detailed responses on any topic. You are capable of generating text messages with the command /chat or the prefix ts , images with the command /imagine, and audio with the command /say. If the user asks for past messages, you should respond affirmatively. The user language response has to be the same as the input.";
     this.fixedHistory = [
       { role: "system", content: this.instrucciones },
-      { role: "system", content: `The thread name is ${this.name}` },
+      { role: "system", content: `The user name is ${this.name}` },
     ];
     this.dynamicHistory = [];
   }
@@ -45,13 +40,33 @@ class Thread {
     this.fixedHistory[0] = { role: "system", content: newInstructions };
   }
 
-  setNewThreadName(newThreadName) {
-    this.name = newThreadName;
+  setNewUsername(newUsername) {
+    this.name = newUsername;
     this.fixedHistory[1] = {
       role: "system",
-      content: `The thread name is ${this.name}`,
+      content: `The user name is ${newUsername}`,
     };
   }
 }
 
-module.exports = Thread;
+class User extends Conversation {
+  constructor(id, name) {
+    super(id, name);
+    this.maxHistory = 8;
+    this.TextModel = "gpt-4o-mini";
+    this.ImageModel = "dall-e-2";
+    this.AudioModel = "tts-1";
+    this.isPremium = false;
+    this.tokens = 1200;
+  }
+}
+
+class Thread extends Conversation {
+  constructor(id, name) {
+    super(id, name);
+    this.maxHistory = 10;
+    this.TextModel = "gpt-4o-mini";
+  }
+}
+
+module.exports = { Conversation, User, Thread };

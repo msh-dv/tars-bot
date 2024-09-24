@@ -7,7 +7,7 @@ const {
   EmbedBuilder,
   codeBlock,
 } = require("discord.js");
-const { getUser } = require("../../modules/users/usersHistory");
+const { getUser } = require("../../modules/conversations/conversationsHistory");
 
 module.exports = {
   data: new SlashCommandBuilder()
