@@ -3,6 +3,14 @@ const path = require("node:path");
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 require("dotenv").config();
 
+console.log(`
+  ______ ___     ____  _____
+ /_  __//   |   / __ \\/ ___/
+  / /  / /| |  / /_/ /\\__ \\ 
+ / /  / ___ | / _, _/___/ / 
+/_/  /_/  |_|/_/ |_|/____/  
+`);
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -17,7 +25,7 @@ client.cooldowns = new Collection();
 
 const foldersPath = path.join(__dirname, "comandos");
 const commandFolders = fs.readdirSync(foldersPath);
-
+console.log("Cargando comandos...");
 for (const folder of commandFolders) {
   const commandsPath = path.join(foldersPath, folder);
   const commandFiles = fs
@@ -28,6 +36,7 @@ for (const folder of commandFolders) {
     const command = require(filePath);
     if ("data" in command && "execute" in command) {
       client.commands.set(command.data.name, command);
+      console.log(`Comando: ${command.data.name} listo!`);
     } else {
       console.log(
         `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
@@ -41,13 +50,16 @@ const eventFiles = fs
   .readdirSync(eventsPath)
   .filter((file) => file.endsWith(".js"));
 
+console.log("Cargando Eventos...");
 for (const file of eventFiles) {
   const filePath = path.join(eventsPath, file);
   const event = require(filePath);
   if (event.once) {
     client.once(event.name, (...args) => event.execute(...args));
+    console.log(`Evento ${event.name} listo!`);
   } else {
     client.on(event.name, (...args) => event.execute(...args));
+    console.log(`Evento ${event.name} listo!`);
   }
 }
 

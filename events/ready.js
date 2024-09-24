@@ -24,6 +24,6 @@ module.exports = {
 
     setInterval(showGuildUsersCount, 600000);
 
-    console.log(`Ready! logged as ${client.user.tag}`);
+    console.log(`Listo! logeado como: ${client.user.tag}`);
   },
 };
