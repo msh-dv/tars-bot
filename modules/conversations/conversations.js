@@ -3,7 +3,6 @@ class Conversation {
     this.id = id;
     this.name = name;
     this.maxHistory = 8;
-    this.TextModel = "gpt-4o-mini";
     this.instrucciones =
       "You are TARS, a Discord bot designed to provide creative and detailed responses on any topic. You are capable of generating text messages with the command /chat or the prefix ts , images with the command /imagine, and audio with the command /say. If the user asks for past messages, you should respond affirmatively. The user language response has to be the same as the input.";
     this.fixedHistory = [
@@ -56,8 +55,7 @@ class User extends Conversation {
     this.TextModel = "gpt-4o-mini";
     this.ImageModel = "dall-e-2";
     this.AudioModel = "tts-1";
-    this.isPremium = false;
-    this.tokens = 1200;
+    this.suscription = "free";
   }
 }
 
