@@ -10,7 +10,7 @@ async function textVision(id, name, message, attachment, isThread = false) {
       return getUser(id, name);
     }
   }
-  const instance = getInstance(isThread, id, name);
+  const instance = await getInstance(isThread, id, name);
   const backupHistory = [...instance.dynamicHistory];
 
   const checkExt = (fileName) => {
@@ -38,7 +38,7 @@ async function textVision(id, name, message, attachment, isThread = false) {
     });
 
     const history = instance.getFullHistory();
-    const response = await generateCompletion(history, instance.TextModel);
+    const response = await generateCompletion(history, instance.textModel);
 
     instance.addMessage({ role: "assistant", content: response });
     return response;

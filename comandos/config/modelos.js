@@ -7,8 +7,8 @@ const {
   EmbedBuilder,
   codeBlock,
 } = require("discord.js");
+const userModel = require("../../modules/mongo/models/Users");
 const { getUser } = require("../../modules/conversations/conversationsHistory");
-
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("modelos")
@@ -19,7 +19,9 @@ module.exports = {
     const userName = interaction.member.displayName || "anon";
     const userID = interaction.member.id || "none";
 
-    const userData = getUser(userID, userName);
+    await getUser(userID, userName);
+
+    const userData = await userModel.findOne({ id: userID });
 
     const embed = new EmbedBuilder()
       .setColor("White")
@@ -29,15 +31,15 @@ module.exports = {
       .addFields(
         {
           name: bold("Texto:"),
-          value: codeBlock(`${userData.TextModel}`),
+          value: codeBlock(`${userData.textModel}`),
         },
         {
           name: bold("Imagenes:"),
-          value: codeBlock(`${userData.ImageModel}`),
+          value: codeBlock(`${userData.imageModel}`),
         },
         {
           name: bold("Audio:"),
-          value: codeBlock(`${userData.AudioModel}`),
+          value: codeBlock(`${userData.audioModel}`),
         }
       )
       .setTimestamp();

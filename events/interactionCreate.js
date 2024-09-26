@@ -6,6 +6,7 @@ const {
   ActionRowBuilder,
 } = require("discord.js");
 
+const userModel = require("../modules/mongo/models/Users");
 const { getUser } = require("../modules/conversations/conversationsHistory");
 const moderation = require("../modules/moderation/moderation");
 
@@ -14,7 +15,8 @@ module.exports = {
   async execute(interaction) {
     const userName = interaction.member.displayName || "anon";
     const userID = interaction.member.id || "none";
-    const userData = getUser(userID, userName);
+    const userData = await userModel.findOne({ id: userID });
+    const mapData = await getUser(userID, userName);
 
     const { cooldowns } = interaction.client;
 
@@ -89,21 +91,21 @@ module.exports = {
             content: `> Actualizando modelo de Texto a: **${interactionValue}**`,
             ephemeral: true,
           });
-          userData.TextModel = interactionValue;
+          userData.textModel = interactionValue;
           break;
         case "imageModel":
           await interaction.reply({
             content: `> Actualizando modelo de Imagenes a: **${interactionValue}**`,
             ephemeral: true,
           });
-          userData.ImageModel = interactionValue;
+          userData.imageModel = interactionValue;
           break;
         case "audioModel":
           await interaction.reply({
             content: `> Actualizando modelo de Audio a: **${interactionValue}**`,
             ephemeral: true,
           });
-          userData.AudioModel = interactionValue;
+          userData.audioModel = interactionValue;
           break;
         default:
           await interaction.reply({
@@ -111,6 +113,7 @@ module.exports = {
             ephemeral: true,
           });
       }
+      await userData.save();
     } else if (interaction.isButton()) {
       const button = interaction;
       if (button.customId == "configModal") {
@@ -126,7 +129,6 @@ module.exports = {
           .setPlaceholder("e.g Victor Manuel Vicente, Juan.")
           .setRequired(false)
           .setMaxLength(2_0)
-          .setValue(`${userName}`)
           .setStyle(TextInputStyle.Short);
 
         const nuevasInstrucciones = new TextInputBuilder()
@@ -148,8 +150,10 @@ module.exports = {
 
         await interaction.showModal(modal);
       } else if (button.customId == "wipeMemory") {
-        console.log("Borrando memoria");
-        userData.wipeMemory();
+        mapData.wipeMemory();
+        userData.dynamicHistory = [];
+        userData.instructions = mapData.instrucciones;
+        userData.save();
         await interaction.reply({
           content: "Memoria del asistente restaurada.",
           ephemeral: true,
@@ -164,10 +168,8 @@ module.exports = {
         nuevoUsername = `${userName}`;
       }
       if (!nuevasInstrucciones.trim()) {
-        nuevasInstrucciones = `Default`;
+        nuevasInstrucciones = `${userData.instructions}`;
       }
-
-      console.log({ nuevoUsername, nuevasInstrucciones });
       const isName = await moderation(nuevoUsername);
       const isInst = await moderation(nuevasInstrucciones);
 
@@ -178,8 +180,13 @@ module.exports = {
         });
       }
 
-      userData.setNewUsername(nuevoUsername);
-      userData.setNewInstructions(nuevasInstrucciones);
+      mapData.setNewUsername(nuevoUsername);
+      mapData.setNewInstructions(nuevasInstrucciones);
+
+      userData.name = nuevoUsername;
+      userData.instructions = nuevasInstrucciones;
+
+      userData.save();
 
       await interaction.reply({
         content: `Se actualizaron los datos del asistente.`,

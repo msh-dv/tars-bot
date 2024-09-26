@@ -1,15 +1,15 @@
 class Conversation {
-  constructor(id, name) {
+  constructor(id, name, suscription, instrucciones, dynamicHistory, max) {
     this.id = id;
     this.name = name;
-    this.maxHistory = 8;
-    this.instrucciones =
-      "You are TARS, a Discord bot designed to provide creative and detailed responses on any topic. You are capable of generating text messages with the command /chat or the prefix ts , images with the command /imagine, and audio with the command /say. If the user asks for past messages, you should respond affirmatively. The user language response has to be the same as the input.";
+    this.suscription = suscription;
+    this.instrucciones = instrucciones;
+    this.maxHistory = max;
     this.fixedHistory = [
       { role: "system", content: this.instrucciones },
       { role: "system", content: `The user name is ${this.name}` },
     ];
-    this.dynamicHistory = [];
+    this.dynamicHistory = dynamicHistory;
   }
 
   addMessage({ role, content }) {
@@ -49,13 +49,8 @@ class Conversation {
 }
 
 class User extends Conversation {
-  constructor(id, name) {
-    super(id, name);
-    this.maxHistory = 8;
-    this.TextModel = "gpt-4o-mini";
-    this.ImageModel = "dall-e-2";
-    this.AudioModel = "tts-1";
-    this.suscription = "free";
+  constructor(id, name, suscription, instrucciones, dynamicHistory, max) {
+    super(id, name, suscription, instrucciones, dynamicHistory, max);
   }
 }
 

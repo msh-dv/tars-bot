@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema({
     default: "free",
   },
   textModel: { type: String, default: "gpt-4o-mini" },
-  ImageModel: { type: String, default: "dall-e-2" },
-  AudioModel: { type: String, default: "tts-1" },
+  imageModel: { type: String, default: "dall-e-2" },
+  audioModel: { type: String, default: "tts-1" },
   instructions: {
     type: String,
     default:

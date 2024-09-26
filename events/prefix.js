@@ -29,7 +29,7 @@ module.exports = {
     const handleError = (err) => {
       console.error(
         `Error de comando (prefijo) ${createdAt} : ${userName} : ${userID} : ${content}`,
-        err.message
+        err
       );
       message.reply("> *Hubo un error ejecutando este comando.*");
     };
@@ -52,7 +52,6 @@ module.exports = {
     }
 
     try {
-
       await channel.sendTyping();
 
       if (referencedAttachmentUrl) {

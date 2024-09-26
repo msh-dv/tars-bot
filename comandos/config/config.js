@@ -7,6 +7,7 @@ const {
   bold,
 } = require("discord.js");
 const { getUser } = require("../../modules/conversations/conversationsHistory");
+const userModel = require("../../modules/mongo/models/Users");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -18,14 +19,15 @@ module.exports = {
     const userName = interaction.member.displayName || "anon";
     const userID = interaction.member.id || "none";
 
-    const userData = getUser(userID, userName);
+    getUser(userID, userName);
+    const userData = await userModel.findOne({ id: userID });
     let embedInstructions = "";
-    const instrucciones = userData.instrucciones;
+    const instrucciones = userData.instructions;
     const defaultInstructions =
       "You are TARS, a Discord bot designed to provide creative and detailed responses on any topic. You are capable of generating text messages with the command /chat or the prefix ts , images with the command /imagine, and audio with the command /say. If the user asks for past messages, you should respond affirmatively. The user language response has to be the same as the input.";
 
     if (instrucciones == defaultInstructions) {
-      embedInstructions = "Default";
+      embedInstructions = "You are TARS, a Discord bot designed to provide...";
     } else {
       embedInstructions = instrucciones;
     }

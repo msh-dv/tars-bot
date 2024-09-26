@@ -1,5 +1,9 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const connectDB = require("./modules/mongo/db");
+const {
+  loadUsersToMap,
+} = require("./modules/conversations/conversationsHistory");
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 require("dotenv").config();
 
@@ -62,6 +66,9 @@ for (const file of eventFiles) {
     console.log(`Evento ${event.name} listo!`);
   }
 }
+
+connectDB();
+loadUsersToMap();
 
 const token =
   process.env.ENV === "exp"

@@ -14,7 +14,7 @@ async function generateCompletion(history, model, max_tokens = 500) {
     const tokenUsage = completion.usage.total_tokens * 2;
 
     console.log(
-      `Request tokens = ${realTokens}\nAjuste de precio: ${tokenUsage}`
+      `Model: ${model}\nRequest tokens = ${realTokens}\nAjuste de precio: ${tokenUsage}`
     );
 
     return completion.choices[0].message.content;
