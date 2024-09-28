@@ -47,7 +47,7 @@ module.exports = {
 
     if (userID != "725826170519552172") {
       return await interaction.editReply(
-        "> *Acceso limitado por el momento solo para *testers**"
+        "> *Acceso limitado por el momento solo para testers*"
       );
     }
 

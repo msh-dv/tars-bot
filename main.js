@@ -54,13 +54,13 @@ const eventFiles = fs
   .readdirSync(eventsPath)
   .filter((file) => file.endsWith(".js"));
 
-console.log("Cargando Eventos...");
+console.log("\nCargando Eventos...");
 for (const file of eventFiles) {
   const filePath = path.join(eventsPath, file);
   const event = require(filePath);
   if (event.once) {
     client.once(event.name, (...args) => event.execute(...args));
-    console.log(`Evento ${event.name} listo!`);
+    console.log(`Evento unico ${event.name} listo!`);
   } else {
     client.on(event.name, (...args) => event.execute(...args));
     console.log(`Evento ${event.name} listo!`);

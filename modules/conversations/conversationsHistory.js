@@ -6,6 +6,9 @@ const threadsData = new Map();
 
 async function loadUsersToMap() {
   const users = await userModel.find();
+  const chatsCount = await userModel.countDocuments();
+  console.log(`Cargando chats en memoria...`);
+  let cont = 0;
   users.forEach((user) => {
     userData.set(
       user.id,
@@ -18,8 +21,10 @@ async function loadUsersToMap() {
         user.maxHistory
       )
     );
+    cont++;
+    process.stdout.write(`${cont} chats de ${chatsCount} cargados.\r`);
   });
-  console.log("Usuarios cargados al Map desde MongoDB");
+  console.log();
 }
 
 async function getUser(id, name) {

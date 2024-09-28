@@ -55,7 +55,7 @@ module.exports = {
       await channel.sendTyping();
 
       if (referencedAttachmentUrl) {
-        const finalCommand = `${referencedMessageContent} ${command}`.trim();
+        const finalCommand = `${referencedMessageContent}  ${command}`.trim();
         const imgResponse = await imageVision(
           userID,
           userName,
