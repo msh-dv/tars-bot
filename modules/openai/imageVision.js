@@ -11,8 +11,22 @@ async function textVision(id, name, message, attachment, isThread = false) {
       return getUser(id, name);
     }
   }
+
+  function getData(isThread, id) {
+    if (isThread) {
+      return threadModel.findOne({ id: id });
+    } else {
+      return userModel.findOne({ id: id });
+    }
+  }
+
+  function getModel(isThread) {
+    return isThread ? threadModel : userModel;
+  }
+
   const instance = await getInstance(isThread, id, name);
-  const userData = await userModel.findOne({ id: id });
+  const data = await getData(isThread, id, name);
+  const model = getModel(isThread);
   const backupHistory = [...instance.dynamicHistory];
 
   const checkExt = (fileName) => {
@@ -40,12 +54,23 @@ async function textVision(id, name, message, attachment, isThread = false) {
     });
 
     const history = instance.getFullHistory();
-    const response = await generateCompletion(history, userData.textModel);
+    const response = await generateCompletion(history, data.textModel);
 
     instance.addMessage({ role: "assistant", content: response });
+
+    await model.updateOne(
+      { id: id },
+      { $set: { dynamicHistory: instance.dynamicHistory } }
+    );
+
     return response;
   } catch (error) {
     instance.dynamicHistory = backupHistory;
+
+    await model.updateOne(
+      { id: id },
+      { $set: { dynamicHistory: backupHistory } }
+    );
     console.error("Error de OpenAI (Imagen):", error.message);
     return `> *Archivo corrupto o con exptension incorrecta.*`;
   }

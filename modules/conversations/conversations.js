@@ -49,16 +49,14 @@ class Conversation {
 }
 
 class User extends Conversation {
-  constructor(id, name, suscription, instrucciones, dynamicHistory, max) {
-    super(id, name, suscription, instrucciones, dynamicHistory, max);
+  constructor(id, name, suscription, instructions, dynamicHistory, max) {
+    super(id, name, suscription, instructions, dynamicHistory, max);
   }
 }
 
 class Thread extends Conversation {
-  constructor(id, name) {
-    super(id, name);
-    this.maxHistory = 10;
-    this.TextModel = "gpt-4o-mini";
+  constructor(id, name, instructions, dynamicHistory, max) {
+    super(id, name, null, instructions, dynamicHistory, max);
   }
 }
 

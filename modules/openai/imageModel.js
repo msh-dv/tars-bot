@@ -3,7 +3,12 @@ const moderation = require("../moderation/moderation");
 require("dotenv").config();
 const openai = new OpenAI();
 
-async function imageModel(imgPrompt, model = "dall-e-2", size = "1024x1024") {
+async function imageModel(
+  imgPrompt,
+  model = "dall-e-2",
+  size = "1024x1024",
+  quality = "standard"
+) {
   try {
     const result = await moderation(imgPrompt);
 
@@ -18,6 +23,7 @@ async function imageModel(imgPrompt, model = "dall-e-2", size = "1024x1024") {
       prompt: imgPrompt,
       n: 1,
       size: size,
+      quality: quality,
     });
 
     return image.data[0].url;

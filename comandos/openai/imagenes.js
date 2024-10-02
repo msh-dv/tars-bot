@@ -30,6 +30,15 @@ module.exports = {
     )
     .addStringOption((option) =>
       option
+        .setName("quality")
+        .setDescription("Image quality.")
+        .addChoices(
+          { name: "Standard", value: "standard" },
+          { name: "HD", value: "hd" }
+        )
+    )
+    .addStringOption((option) =>
+      option
         .setName("size")
         .setDescription("Tamaño de la imagen a generar.")
         .addChoices(
@@ -59,14 +68,18 @@ module.exports = {
 
       let model = interaction.options.getString("model") || userModel;
       let size = interaction.options.getString("size") || "1024x1024";
+      let quality = interaction.options.getString("quality") || "standard";
 
-      if (model == "dall-e-2" && (size == "1792x1024" || size == "1024x1792")) {
+      if (
+        model == "dall-e-2" &&
+        (size == "1792x1024" || size == "1024x1792" || quality == "hd")
+      ) {
         return await interaction.editReply(
           "> *Este tamaño no esta disponible para este modelo*"
         );
       }
 
-      const response = await imageModel(prompt, model, size);
+      const response = await imageModel(prompt, model, size, quality);
 
       if (response) {
         try {

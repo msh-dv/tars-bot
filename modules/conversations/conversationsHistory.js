@@ -1,12 +1,18 @@
 const { User, Thread } = require("./conversations");
 const userModel = require("../mongo/models/Users");
+const threadModel = require("../mongo/models/Threads");
 
 const userData = new Map();
 const threadsData = new Map();
 
+// TODO: Refactorizar set users
+
+//Users
 async function loadUsersToMap() {
   const users = await userModel.find();
-  const chatsCount = await userModel.countDocuments();
+  const threads = await threadModel.find();
+  const chatsCount =
+    (await userModel.countDocuments()) + (await threadModel.countDocuments());
   console.log(`Cargando chats en memoria...`);
   let cont = 0;
   users.forEach((user) => {
@@ -22,8 +28,21 @@ async function loadUsersToMap() {
       )
     );
     cont++;
-    process.stdout.write(`${cont} chats de ${chatsCount} cargados.\r`);
   });
+  threads.forEach((thread) => {
+    threadsData.set(
+      thread.id,
+      new Thread(
+        thread.id,
+        thread.name,
+        thread.instructions,
+        thread.dynamicHistory,
+        thread.maxHistory
+      )
+    );
+    cont++;
+  });
+  process.stdout.write(`${cont} chats de ${chatsCount} cargados.\r`);
   console.log();
 }
 
@@ -53,18 +72,36 @@ function removeUser(id) {
   userData.delete(id);
 }
 
-function getThread(id) {
+//Threads
+
+async function getThread(id) {
   return threadsData.get(id);
 }
 
-function createThread(id, name) {
-  threadsData.set(id, new Thread(id, name));
+async function createThread(id, name) {
+  const thread = new threadModel({ id: id, name });
+  await thread.save();
+
+  threadsData.set(
+    thread.id,
+    new Thread(
+      thread.id,
+      thread.name,
+      thread.instructions,
+      thread.dynamicHistory,
+      thread.maxHistory
+    )
+  );
 }
 
 function isThreadInHistory(id) {
   if (threadsData.has(id)) {
     return true;
   }
+}
+
+function removeThread(id) {
+  threadsData.delete(id);
 }
 
 module.exports = {
@@ -74,4 +111,5 @@ module.exports = {
   createThread,
   isThreadInHistory,
   loadUsersToMap,
+  removeThread,
 };
