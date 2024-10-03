@@ -26,7 +26,6 @@ async function textModel(id, name, message, isThread = false, userID) {
   }
 
   const instance = await getInstance(isThread, id, name);
-  console.log(instance);
   const data = await getData(isThread, id, name);
   const model = getModel(isThread);
   const backupHistory = [...instance.dynamicHistory];

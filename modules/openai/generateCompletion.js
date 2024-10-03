@@ -28,7 +28,7 @@ async function generateCompletion(
       max_tokens: max_tokens,
     });
 
-    const realTokens = completion.usage.total_tokens;
+    // const realTokens = completion.usage.total_tokens;
     const tokenUsage = completion.usage.total_tokens * 2;
 
     if (userBalance.tokens < tokenUsage) {
@@ -37,10 +37,6 @@ async function generateCompletion(
     userBalance.tokens -= tokenUsage;
 
     await userBalance.save();
-
-    console.log(
-      `Model: ${model}\nRequest tokens = ${realTokens}\nAjuste de precio: ${tokenUsage}`
-    );
 
     return completion.choices[0].message.content;
   } catch (error) {
