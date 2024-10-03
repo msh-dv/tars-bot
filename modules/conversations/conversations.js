@@ -1,8 +1,8 @@
 class Conversation {
-  constructor(id, name, suscription, instrucciones, dynamicHistory, max) {
+  constructor(id, name, subscription, instrucciones, dynamicHistory, max) {
     this.id = id;
     this.name = name;
-    this.suscription = suscription;
+    this.subscription = subscription;
     this.instrucciones = instrucciones;
     this.maxHistory = max;
     this.fixedHistory = [
@@ -49,14 +49,19 @@ class Conversation {
 }
 
 class User extends Conversation {
-  constructor(id, name, suscription, instructions, dynamicHistory, max) {
-    super(id, name, suscription, instructions, dynamicHistory, max);
+  constructor(id, name, subscription, instructions, dynamicHistory, max) {
+    super(id, name, subscription, instructions, dynamicHistory, max);
   }
 }
 
 class Thread extends Conversation {
   constructor(id, name, instructions, dynamicHistory, max) {
     super(id, name, null, instructions, dynamicHistory, max);
+
+    this.fixedHistory = [
+      { role: "system", content: this.instrucciones },
+      { role: "system", content: `The thread name is ${this.name}` },
+    ];
   }
 }
 

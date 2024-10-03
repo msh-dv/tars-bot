@@ -3,11 +3,25 @@ const openai = new OpenAI();
 const userModel = require("../mongo/models/Users");
 require("dotenv").config();
 
-async function generateCompletion(id, history, model, max_tokens = 500) {
-  const userBalance = await userModel.findOne({ id: id });
-  if (!userBalance) throw new Error("Usuario no encontrado");
-
+async function generateCompletion(
+  id,
+  history,
+  model,
+  max_tokens = 500,
+  isThread = false,
+  userID
+) {
   try {
+    let userBalance;
+
+    if (isThread) {
+      userBalance = await userModel.findOne({ id: userID });
+    } else {
+      userBalance = await userModel.findOne({ id: id });
+    }
+
+    if (!userBalance) throw new Error("Usuario no encontrado");
+
     const completion = await openai.chat.completions.create({
       messages: history,
       model: model,

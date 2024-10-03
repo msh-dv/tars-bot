@@ -1,9 +1,17 @@
 const { getUser, getThread } = require("../conversations/conversationsHistory");
 const generateCompletion = require("./generateCompletion");
 const userModel = require("../mongo/models/Users");
+const threadModel = require("../mongo/models/Threads");
 const moderation = require("../moderation/moderation");
 
-async function textVision(id, name, message, attachment, isThread = false) {
+async function textVision(
+  id,
+  name,
+  message,
+  attachment,
+  isThread = false,
+  userID
+) {
   function getInstance(isThread, id, name) {
     if (isThread) {
       return getThread(id, name);
@@ -54,7 +62,14 @@ async function textVision(id, name, message, attachment, isThread = false) {
     });
 
     const history = instance.getFullHistory();
-    const response = await generateCompletion(history, data.textModel);
+    const response = await generateCompletion(
+      id,
+      history,
+      data.textModel,
+      null,
+      isThread,
+      userID
+    );
 
     instance.addMessage({ role: "assistant", content: response });
 

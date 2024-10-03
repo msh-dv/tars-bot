@@ -4,7 +4,7 @@ const threadModel = require("../mongo/models/Threads");
 const generateCompletion = require("./generateCompletion");
 const moderation = require("../moderation/moderation");
 
-async function textModel(id, name, message, isThread = false) {
+async function textModel(id, name, message, isThread = false, userID) {
   function getInstance(isThread, id, name) {
     if (isThread) {
       return getThread(id, name);
@@ -39,8 +39,14 @@ async function textModel(id, name, message, isThread = false) {
     instance.addMessage({ role: "user", content: message });
 
     const history = instance.getFullHistory();
-    const response = await generateCompletion(id, history, data.textModel);
-    // --- Pasar el modelo de usuario como argumento ---
+    const response = await generateCompletion(
+      id,
+      history,
+      data.textModel,
+      null,
+      isThread,
+      userID
+    );
 
     instance.addMessage({ role: "assistant", content: response });
 

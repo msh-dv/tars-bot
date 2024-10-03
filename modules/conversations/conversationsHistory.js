@@ -21,7 +21,7 @@ async function loadUsersToMap() {
       new User(
         user.id,
         user.name,
-        user.suscription,
+        user.subscription,
         user.instructions,
         user.dynamicHistory,
         user.maxHistory
@@ -58,7 +58,7 @@ async function getUser(id, name) {
       new User(
         user.id,
         user.name,
-        user.suscription,
+        user.subscription,
         user.instructions,
         user.dynamicHistory,
         user.maxHistory

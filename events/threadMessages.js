@@ -84,7 +84,8 @@ module.exports = {
           userID,
           userName,
           finalCommand,
-          referencedAttachmentUrl
+          referencedAttachmentUrl,
+          userID
         );
         if (imgResponse) {
           await sendLongMessage(imgResponse);
@@ -97,7 +98,8 @@ module.exports = {
           threadName,
           command,
           attachment.url,
-          true
+          true,
+          userID
         );
         imgResponse
           ? await sendLongMessage(imgResponse)
@@ -111,7 +113,8 @@ module.exports = {
           threadID,
           threadName,
           usernameCommand,
-          true
+          true,
+          userID
         );
         textResponse
           ? await sendLongMessage(textResponse)

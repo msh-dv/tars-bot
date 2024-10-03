@@ -6,9 +6,9 @@ const userSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   tokens: { type: Number, default: 30000 },
-  suscription: {
+  subscription: {
     type: String,
-    enum: ["free", "basic", "standard", "premium"],
+    enum: ["free", "essential", "pro", "elite"],
     default: "free",
   },
   textModel: { type: String, default: "gpt-4o-mini" },
