@@ -28,13 +28,28 @@ async function generateCompletion(
       max_tokens: max_tokens,
     });
 
-    // const realTokens = completion.usage.total_tokens;
-    const tokenUsage = completion.usage.total_tokens * 2;
+    const usage = completion.usage;
+    const inputTokens = usage.prompt_tokens;
+    const outputTokens = usage.completion_tokens;
+    const totalTokens = usage.total_tokens;
 
-    if (userBalance.tokens < tokenUsage) {
+    const tarsIn = inputTokens;
+    const tarsOut = outputTokens * 4;
+    const tarsTotal = (tarsIn + tarsOut) * 2;
+
+    console.log(
+      `Real:\nModel: ${model}\nInput: ${inputTokens}\nOutput: ${outputTokens}\n Total: ${totalTokens}`
+    );
+    console.log();
+    console.log(
+      `TARS:\nModel: ${model}\nInput: ${tarsIn}\nOutput: ${tarsOut}\n Total: ${tarsTotal}`
+    );
+    console.log();
+
+    if (userBalance.tokens < tarsTotal) {
       return `No tienes suficientes tokens. ;)`;
     }
-    userBalance.tokens -= tokenUsage;
+    userBalance.tokens -= tarsTotal;
 
     await userBalance.save();
 
