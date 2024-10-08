@@ -11,7 +11,7 @@ const userModel = require("../../modules/mongo/models/Users");
 const { getUser } = require("../../modules/conversations/conversationsHistory");
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("modelos")
+    .setName("models")
     .setDescription(
       "Personaliza los modelos por defecto para texto, imagenes y audio."
     ),
@@ -30,11 +30,11 @@ module.exports = {
       .setThumbnail(interaction.user.avatarURL())
       .addFields(
         {
-          name: bold("Texto:"),
+          name: bold("Text:"),
           value: codeBlock(`${userData.textModel}`),
         },
         {
-          name: bold("Imagenes:"),
+          name: bold("Images:"),
           value: codeBlock(`${userData.imageModel}`),
         },
         {
@@ -104,7 +104,7 @@ module.exports = {
     const audioModel = new ActionRowBuilder().addComponents(audioSelector);
 
     await interaction.reply({
-      content: "## Configuración de modelos:",
+      content: "## Default models config:",
       embeds: [embed],
       components: [textModel, imageModel, audioModel],
       ephemeral: true,

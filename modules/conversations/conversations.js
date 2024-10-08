@@ -1,3 +1,6 @@
+require("dotenv").config();
+const summarizeMessage = require("../summarizer/summarizeMessage");
+
 class Conversation {
   constructor(id, name, subscription, instrucciones, dynamicHistory, max) {
     this.id = id;
@@ -10,18 +13,46 @@ class Conversation {
       { role: "system", content: `The user name is ${this.name}` },
     ];
     this.dynamicHistory = dynamicHistory;
+    this.middleTermMemory = [];
+    this.longTermMemory = [];
   }
 
-  addMessage({ role, content }) {
-    this.dynamicHistory.push({ role, content });
+  async summarize(message) {
+    return await summarizeMessage(message);
+  }
 
+  async addMessage({ role, content }) {
+    this.dynamicHistory.push({ role, content });
+    console.log(this.middleTermMemory);
     if (this.dynamicHistory.length > this.maxHistory) {
-      this.dynamicHistory.shift();
+      const messageToSummarize = this.dynamicHistory.shift();
+      if (
+        messageToSummarize.role == "assistant" &&
+        messageToSummarize.content.length > 450
+      ) {
+        const summarizedMessage = await this.summarize(
+          messageToSummarize.content
+        );
+        this.middleTermMemory.push({
+          role: messageToSummarize.role,
+          content: summarizedMessage,
+        });
+      } else {
+        this.middleTermMemory.push(messageToSummarize);
+      }
+    }
+    if (this.middleTermMemory > this.maxHistory) {
+      this.middleTermMemory.shift();
     }
   }
 
   getFullHistory() {
-    return [...this.fixedHistory, ...this.dynamicHistory];
+    return [
+      ...this.fixedHistory,
+      ...this.longTermMemory,
+      ...this.middleTermMemory,
+      ...this.dynamicHistory,
+    ];
   }
 
   wipeMemory() {

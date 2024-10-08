@@ -34,17 +34,21 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor("White")
-      .setTitle("Instrucciones")
+      .setTitle("Configuration")
       .setDescription(`${userName} (${userID})`)
       .setThumbnail(interaction.user.avatarURL())
       .addFields(
         {
-          name: bold("Nombre del usuario:"),
+          name: bold("Username:"),
           value: `${userData.name}`,
         },
         {
-          name: bold("Instrucciones:"),
+          name: bold("Instructions:"),
           value: `${embedInstructions}`,
+        },
+        {
+          name: bold("Tokens:"),
+          value: `${userData.tokens}`,
         }
       )
       .setTimestamp();
