@@ -14,8 +14,8 @@ export default {
   async execute(interaction) {
     const userName = interaction.member.displayName || "anon";
     const userID = interaction.member.id || "none";
-    const userData = await userModel.findOne({ id: userID });
     const mapData = await getUser(userID, userName);
+    const userData = await userModel.findOne({ id: userID });
 
     if (!userData.guilds.some((guild) => guild.id === interaction.guild.id)) {
       userData.guilds.push({

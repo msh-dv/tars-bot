@@ -20,7 +20,7 @@ export default {
     const userName = interaction.member.displayName || "anon";
     const userID = interaction.member.id || "none";
 
-    getUser(userID, userName);
+    await getUser(userID, userName);
     const userData = await userModel.findOne({ id: userID });
     let embedInstructions = "";
     const instrucciones = userData.instructions;
