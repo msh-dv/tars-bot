@@ -1,7 +1,7 @@
-import audioReq from '../../modules/openai/audioModel.js';
-import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
-import { SlashCommandBuilder } from 'discord.js';
+import audioReq from "../../modules/openai/audioModel.js";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
+import { SlashCommandBuilder } from "discord.js";
 
 export default {
   data: new SlashCommandBuilder()
@@ -11,7 +11,7 @@ export default {
       option
         .setName("prompt")
         .setDescription("Mensaje a convertir en audio.")
-        .setMaxLength(4_50)
+        .setMaxLength(2_000)
         .setRequired(true)
     )
     .addStringOption((option) =>
@@ -50,7 +50,7 @@ export default {
 
       if (response) {
         await interaction.editReply({
-          files: [{ attachment: response, name: `audio_${uuidv4()}.mp3` }],
+          files: [{ attachment: response, name: `tars_audio_${uuidv4()}.mp3` }],
         });
 
         console.log(`Eliminando: ${response}`);
