@@ -1,11 +1,8 @@
-const { SlashCommandBuilder } = require("discord.js");
+import { SlashCommandBuilder } from "discord.js";
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("hi")
-    .setDescription("Saluda.:)"),
+export default {
+  data: new SlashCommandBuilder().setName("hi").setDescription("Saluda.:)"),
   async execute(interaction) {
     await interaction.reply(`Hola, ${interaction.user.username}! ;)`);
   },
 };
-

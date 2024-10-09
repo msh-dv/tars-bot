@@ -1,16 +1,15 @@
-const {
+import {
   Events,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
   ActionRowBuilder,
-} = require("discord.js");
+} from "discord.js";
+import userModel from "../modules/mongo/models/Users.js";
+import { getUser } from "../modules/conversations/conversationsHistory.js";
+import moderation from "../modules/moderation/moderation.js";
 
-const userModel = require("../modules/mongo/models/Users");
-const { getUser } = require("../modules/conversations/conversationsHistory");
-const moderation = require("../modules/moderation/moderation");
-
-module.exports = {
+export default {
   name: Events.InteractionCreate,
   async execute(interaction) {
     const userName = interaction.member.displayName || "anon";

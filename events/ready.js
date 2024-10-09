@@ -1,6 +1,6 @@
-const { Events, ActivityType } = require("discord.js");
+import { Events, ActivityType } from "discord.js";
 
-module.exports = {
+export default {
   name: Events.ClientReady,
   once: true,
   execute(client) {

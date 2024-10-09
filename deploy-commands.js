@@ -1,8 +1,8 @@
-const { REST, Routes } = require("discord.js");
-const { clientId } = require("./package.json");
-const fs = require("node:fs");
-const path = require("node:path");
-require("dotenv").config();
+import { REST, Routes } from "discord.js";
+import { clientId } from "./package.json";
+import fs from "node:fs";
+import path from "node:path";
+import "dotenv/config";
 
 const commands = [];
 const foldersPath = path.join(__dirname, "comandos");

@@ -1,5 +1,5 @@
-require("dotenv").config();
-const summarizeMessage = require("../summarizer/summarizeMessage");
+import "dotenv/config";
+import summarizeMessage from "../summarizer/summarizeMessage.js";
 
 class Conversation {
   constructor(id, name, subscription, instrucciones, dynamicHistory, max) {
@@ -96,4 +96,4 @@ class Thread extends Conversation {
   }
 }
 
-module.exports = { Conversation, User, Thread };
+export { Conversation, User, Thread };

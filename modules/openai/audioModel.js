@@ -1,9 +1,9 @@
-const OpenAI = require("openai");
-const { v4: uuidv4 } = require("uuid");
-const fs = require("fs");
-const path = require("path");
-const moderation = require("../moderation/moderation");
-require("dotenv").config();
+import OpenAI from "openai";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
+import path from "path";
+import moderation from "../moderation/moderation.js";
+import "dotenv/config";
 
 const openai = new OpenAI();
 
@@ -35,4 +35,4 @@ async function audioModel(model = "tts-1", voice = "nova", prompt) {
   }
 }
 
-module.exports = audioModel;
+export default audioModel;

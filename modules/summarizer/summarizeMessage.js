@@ -1,7 +1,8 @@
 //Generacion de resumenes
-const OpenAI = require("openai");
+import OpenAI from 'openai';
+
 const openai = new OpenAI();
-require("dotenv").config();
+import "dotenv/config";
 
 async function summarizeMessage(message) {
   try {
@@ -33,4 +34,4 @@ async function summarizeMessage(message) {
   }
 }
 
-module.exports = summarizeMessage;
+export default summarizeMessage;

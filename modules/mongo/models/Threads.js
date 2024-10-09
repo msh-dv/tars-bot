@@ -1,6 +1,6 @@
 // Esquema de creacion de hilos en mongodb
 
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const threadSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
@@ -17,4 +17,4 @@ const threadSchema = new mongoose.Schema({
 
 const Thread = mongoose.model("Thread", threadSchema);
 
-module.exports = Thread;
+export default Thread;

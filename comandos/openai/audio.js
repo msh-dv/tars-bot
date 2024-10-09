@@ -1,9 +1,9 @@
-const audioReq = require("../../modules/openai/audioModel");
-const { v4: uuidv4 } = require("uuid");
-const fs = require("fs");
-const { SlashCommandBuilder } = require("discord.js");
+import audioReq from '../../modules/openai/audioModel.js';
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import { SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("say")
     .setDescription("Convierte tu texto en un audio.")

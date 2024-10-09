@@ -1,8 +1,8 @@
-const { getUser, getThread } = require("../conversations/conversationsHistory");
-const userModel = require("../mongo/models/Users");
-const threadModel = require("../mongo/models/Threads");
-const generateCompletion = require("./generateCompletion");
-const moderation = require("../moderation/moderation");
+import { getUser, getThread } from '../conversations/conversationsHistory.js';
+import userModel from '../mongo/models/Users.js';
+import threadModel from '../mongo/models/Threads.js';
+import generateCompletion from './generateCompletion.js';
+import moderation from '../moderation/moderation.js';
 
 async function textModel(id, name, message, isThread = false, userID) {
   function getInstance(isThread, id, name) {
@@ -67,4 +67,4 @@ async function textModel(id, name, message, isThread = false, userID) {
   }
 }
 
-module.exports = textModel;
+export default textModel;

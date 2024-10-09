@@ -1,8 +1,8 @@
-const textReq = require("../modules/openai/textModel");
-const imageVision = require("../modules/openai/imageVision");
+import textReq from "../modules/openai/textModel.js";
+import imageVision from "../modules/openai/imageVision.js";
 const prefix = "ts ";
 
-module.exports = {
+export default {
   name: "messageCreate",
   once: false,
   async execute(message) {

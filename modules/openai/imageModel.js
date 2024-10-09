@@ -1,6 +1,6 @@
-const OpenAI = require("openai");
-const moderation = require("../moderation/moderation");
-require("dotenv").config();
+import OpenAI from "openai";
+import moderation from "../moderation/moderation.js";
+import "dotenv/config";
 const openai = new OpenAI();
 
 async function imageModel(
@@ -32,4 +32,4 @@ async function imageModel(
   }
 }
 
-module.exports = imageModel;
+export default imageModel;

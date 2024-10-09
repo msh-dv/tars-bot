@@ -1,6 +1,6 @@
-const { User, Thread } = require("./conversations");
-const userModel = require("../mongo/models/Users");
-const threadModel = require("../mongo/models/Threads");
+import { User, Thread } from './conversations.js';
+import userModel from '../mongo/models/Users.js';
+import threadModel from '../mongo/models/Threads.js';
 
 const userData = new Map();
 const threadsData = new Map();
@@ -104,7 +104,7 @@ function removeThread(id) {
   threadsData.delete(id);
 }
 
-module.exports = {
+export {
   getUser,
   removeUser,
   getThread,

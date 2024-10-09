@@ -1,4 +1,4 @@
-const {
+import {
   bold,
   ActionRowBuilder,
   StringSelectMenuBuilder,
@@ -6,10 +6,12 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   codeBlock,
-} = require("discord.js");
-const userModel = require("../../modules/mongo/models/Users");
-const { getUser } = require("../../modules/conversations/conversationsHistory");
-module.exports = {
+} from "discord.js";
+
+import userModel from "../../modules/mongo/models/Users.js";
+import { getUser } from "../../modules/conversations/conversationsHistory.js";
+
+export default {
   data: new SlashCommandBuilder()
     .setName("models")
     .setDescription(

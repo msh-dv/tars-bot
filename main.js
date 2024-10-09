@@ -1,11 +1,11 @@
-const fs = require("node:fs");
-const path = require("node:path");
-const connectDB = require("./modules/mongo/db");
-const {
-  loadUsersToMap,
-} = require("./modules/conversations/conversationsHistory");
-const { Client, Collection, GatewayIntentBits } = require("discord.js");
-require("dotenv").config();
+import fs from "node:fs";
+// import path from "node:path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+import connectDB from "./modules/mongo/db.js";
+import { loadUsersToMap } from "./modules/conversations/conversationsHistory.js";
+import { Client, Collection, GatewayIntentBits } from "discord.js";
+import "dotenv/config";
 
 console.log(`
   ______ ___     ____  _____
@@ -27,17 +27,20 @@ const client = new Client({
 client.commands = new Collection();
 client.cooldowns = new Collection();
 
-const foldersPath = path.join(__dirname, "comandos");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const foldersPath = join(__dirname, "comandos");
 const commandFolders = fs.readdirSync(foldersPath);
 console.log("Cargando comandos...");
 for (const folder of commandFolders) {
-  const commandsPath = path.join(foldersPath, folder);
+  const commandsPath = join(foldersPath, folder);
   const commandFiles = fs
     .readdirSync(commandsPath)
     .filter((file) => file.endsWith(".js"));
   for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
+    const filePath = join(commandsPath, file);
+    const { default: command } = await import(filePath);
     if ("data" in command && "execute" in command) {
       client.commands.set(command.data.name, command);
       console.log(`Comando: ${command.data.name} listo!`);
@@ -49,15 +52,15 @@ for (const folder of commandFolders) {
   }
 }
 
-const eventsPath = path.join(__dirname, "events");
+const eventsPath = join(__dirname, "events");
 const eventFiles = fs
   .readdirSync(eventsPath)
   .filter((file) => file.endsWith(".js"));
 
 console.log("\nCargando Eventos...");
 for (const file of eventFiles) {
-  const filePath = path.join(eventsPath, file);
-  const event = require(filePath);
+  const filePath = join(eventsPath, file);
+  const { default: event } = await import(filePath);
   if (event.once) {
     client.once(event.name, (...args) => event.execute(...args));
     console.log(`Evento unico ${event.name} listo!`);

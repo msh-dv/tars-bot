@@ -1,8 +1,8 @@
-const { getUser, getThread } = require("../conversations/conversationsHistory");
-const generateCompletion = require("./generateCompletion");
-const userModel = require("../mongo/models/Users");
-const threadModel = require("../mongo/models/Threads");
-const moderation = require("../moderation/moderation");
+import { getUser, getThread } from "../conversations/conversationsHistory.js";
+import generateCompletion from "./generateCompletion.js";
+import userModel from "../mongo/models/Users.js";
+import threadModel from "../mongo/models/Threads.js";
+import moderation from "../moderation/moderation.js";
 
 async function textVision(
   id,
@@ -91,4 +91,4 @@ async function textVision(
   }
 }
 
-module.exports = textVision;
+export default textVision;

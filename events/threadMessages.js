@@ -1,14 +1,12 @@
-const textReq = require("../modules/openai/textModel");
-const imageVision = require("../modules/openai/imageVision");
-const {
-  isThreadInHistory,
-} = require("../modules/conversations/conversationsHistory");
+import textReq from "../modules/openai/textModel.js";
+import imageVision from "../modules/openai/imageVision.js";
+import { isThreadInHistory } from "../modules/conversations/conversationsHistory.js";
 
 const recentMessages = new Map();
 const TIME_FRAME = 1000;
 const MAX_MESSAGES = 2;
 
-module.exports = {
+export default {
   name: "messageCreate",
   once: false,
   async execute(message) {

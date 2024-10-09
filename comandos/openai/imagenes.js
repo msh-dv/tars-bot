@@ -1,13 +1,13 @@
-const imageModel = require("../../modules/openai/imageModel");
-const { getUser } = require("../../modules/conversations/conversationsHistory");
-const {
+import imageModel from "../../modules/openai/imageModel.js";
+import { getUser } from "../../modules/conversations/conversationsHistory.js";
+import {
   SlashCommandBuilder,
   EmbedBuilder,
   AttachmentBuilder,
-} = require("discord.js");
-const axios = require("axios");
+} from "discord.js";
+import axios from "axios";
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("imagine")
     .setDescription("Genera imagenes con modelos como DALL-E-3")

@@ -1,5 +1,5 @@
-const OpenAI = require("openai");
-require("dotenv").config();
+import OpenAI from 'openai';
+import "dotenv/config";
 
 const openai = new OpenAI();
 
@@ -19,4 +19,4 @@ async function moderation(message) {
   }
 }
 
-module.exports = moderation;
+export default moderation;

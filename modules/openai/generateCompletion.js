@@ -1,8 +1,9 @@
 //Generacion de respuetas
-const OpenAI = require("openai");
+import OpenAI from "openai";
+import userModel from "../mongo/models/Users.js";
+
 const openai = new OpenAI();
-const userModel = require("../mongo/models/Users");
-require("dotenv").config();
+import "dotenv/config";
 
 const defaultReload = 6 * 60 * 60 * 1000;
 
@@ -98,4 +99,4 @@ async function generateCompletion(
   }
 }
 
-module.exports = generateCompletion;
+export default generateCompletion;
