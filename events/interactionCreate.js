@@ -17,9 +17,9 @@ export default {
     const userData = await userModel.findOne({ id: userID });
     const mapData = await getUser(userID, userName);
 
-    if (!userData.guilds.includes(interaction.guild)) {
+    if (!userData.guilds.some((guild) => guild.id === interaction.guild.id)) {
       userData.guilds.push({
-        guild: interaction.guild.id,
+        id: interaction.guild.id,
         name: interaction.guild.name,
       });
       await userData.save();
@@ -93,7 +93,10 @@ export default {
           userData.textModel = interactionValue;
           break;
         case "imageModel":
-          if (interactionValue == "dall-e-3") {
+          if (
+            interactionValue == "dall-e-3" &&
+            userData.subscription == "free"
+          ) {
             await interaction.reply({
               content: `> Only premium users can use DALL-E-3 model.`,
               ephemeral: true,

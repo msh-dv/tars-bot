@@ -1,8 +1,8 @@
-import { getUser, getThread } from '../conversations/conversationsHistory.js';
-import userModel from '../mongo/models/Users.js';
-import threadModel from '../mongo/models/Threads.js';
-import generateCompletion from './generateCompletion.js';
-import moderation from '../moderation/moderation.js';
+import { getUser, getThread } from "../conversations/conversationsHistory.js";
+import userModel from "../mongo/models/Users.js";
+import threadModel from "../mongo/models/Threads.js";
+import generateCompletion from "./generateCompletion.js";
+import moderation from "../moderation/moderation.js";
 
 async function textModel(id, name, message, isThread = false, userID) {
   function getInstance(isThread, id, name) {
