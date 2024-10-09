@@ -36,7 +36,7 @@ async function generateCompletion(
         );
 
         const sec = Math.floor((remainingTime % (1000 * 60)) / 1000);
-        return `You must wait ${hrs} hrs, ${min} min, ${sec} sec before you can reload tokens.`;
+        return `> You must wait ${hrs} hrs, ${min} min, ${sec} sec before you can reload tokens.`;
       } else {
         userData.tokens = 50000;
         userData.reloadTime = null;

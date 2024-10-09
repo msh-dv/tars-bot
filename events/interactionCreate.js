@@ -31,9 +31,7 @@ export default {
       const command = interaction.client.commands.get(interaction.commandName);
 
       if (!command) {
-        console.error(
-          `Ningun comando ${interaction.commandName} fue encontrado.`
-        );
+        console.error(`No command named ${interaction.commandName} was found.`);
         return;
       }
       if (!cooldowns.has(command.data.name)) {
@@ -52,9 +50,9 @@ export default {
         if (now < expirationTime) {
           const timeLeft = (expirationTime - now) / 1000;
           return interaction.reply({
-            content: `¡Debes esperar ${timeLeft.toFixed(
+            content: `You must wait ${timeLeft.toFixed(
               1
-            )} segundos antes de usar este comando de nuevo!`,
+            )} seconds before using this command again!`,
             ephemeral: true,
           });
         }
@@ -69,12 +67,12 @@ export default {
         console.error(error);
         if (interaction.replied || interaction.deferred) {
           await interaction.followUp({
-            content: `Hubo un error ejecutando este comando! ${interaction.commandName}`,
+            content: `There was an error executing this command! ${interaction.commandName}`,
             ephemeral: true,
           });
         } else {
           await interaction.reply({
-            content: `Hubo un error ejecutando este comando! ${interaction.commandName}`,
+            content: `There was an error executing this command! ${interaction.commandName}`,
             ephemeral: true,
           });
         }
@@ -87,7 +85,7 @@ export default {
       switch (interactionID) {
         case "textModels":
           await interaction.reply({
-            content: `> Actualizando modelo de Texto a: **${interactionValue}**`,
+            content: `> Updating Text model to: **${interactionValue}**`,
             ephemeral: true,
           });
           userData.textModel = interactionValue;
@@ -98,53 +96,54 @@ export default {
             userData.subscription == "free"
           ) {
             await interaction.reply({
-              content: `> Only premium users can use DALL-E-3 model.`,
+              content: `> Only premium users can use the DALL-E-3 model.`,
               ephemeral: true,
             });
             break;
           }
           await interaction.reply({
-            content: `> Actualizando modelo de Imagenes a: **${interactionValue}**`,
+            content: `> Updating Image model to: **${interactionValue}**`,
             ephemeral: true,
           });
           userData.imageModel = interactionValue;
           break;
         case "audioModel":
           await interaction.reply({
-            content: `> Actualizando modelo de Audio a: **${interactionValue}**`,
+            content: `> Updating Audio model to: **${interactionValue}**`,
             ephemeral: true,
           });
           userData.audioModel = interactionValue;
           break;
         default:
           await interaction.reply({
-            content: `> *Dato no valido: **${interactionValue}***`,
+            content: `> *Invalid data: **${interactionValue}***`,
             ephemeral: true,
           });
       }
+
       await userData.save();
     } else if (interaction.isButton()) {
       const button = interaction;
       if (button.customId == "configModal") {
         const modal = new ModalBuilder()
           .setCustomId("modalInstrucciones")
-          .setTitle("Instrucciones");
+          .setTitle("Instructions");
 
         // Add components to modal
 
         const nuevoUsername = new TextInputBuilder()
           .setCustomId("modalUserName")
-          .setLabel("Nombre del usuario:")
-          .setPlaceholder("e.g Victor Manuel Vicente, Juan.")
+          .setLabel("User name:")
+          .setPlaceholder("e.g Juan.")
           .setRequired(false)
-          .setMaxLength(2_0)
+          .setMaxLength(4_0)
           .setStyle(TextInputStyle.Short);
 
         const nuevasInstrucciones = new TextInputBuilder()
           .setCustomId("modalIntructions")
-          .setLabel("Instrucciones estaticas:")
-          .setPlaceholder("e.g Te llamas TARS y eres un asistente muy util.")
-          .setMaxLength(4_50)
+          .setLabel("Permanent instructions:")
+          .setPlaceholder("e.g You are TARS, a Discord bot designed...")
+          .setMaxLength(5_00)
           .setRequired(false)
           .setStyle(TextInputStyle.Paragraph);
 
@@ -164,7 +163,7 @@ export default {
         userData.instructions = mapData.instrucciones;
         userData.save();
         await interaction.reply({
-          content: "Memoria del asistente restaurada.",
+          content: "> Assistant memory restored.",
           ephemeral: true,
         });
       }
@@ -184,7 +183,7 @@ export default {
 
       if (isName.flagged || isInst.flagged) {
         await interaction.reply({
-          content: `> El contenido inflige nuestras politicas de uso.`,
+          content: `> The content violates our usage policies.`,
           ephemeral: true,
         });
       }
@@ -198,7 +197,7 @@ export default {
       userData.save();
 
       await interaction.reply({
-        content: `Se actualizaron los datos del asistente.`,
+        content: `Assistant data has been updated.`,
         ephemeral: true,
       });
     }
