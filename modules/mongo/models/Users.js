@@ -1,10 +1,11 @@
 // Esquema de creacion de usuarios en mongodb
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   name: { type: String, required: true },
+  guilds: { type: Array, default: [] },
   tokens: { type: Number, default: 50000 },
   subscription: {
     type: String,

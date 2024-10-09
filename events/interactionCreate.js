@@ -17,6 +17,14 @@ export default {
     const userData = await userModel.findOne({ id: userID });
     const mapData = await getUser(userID, userName);
 
+    if (!userData.guilds.includes(interaction.guild)) {
+      userData.guilds.push({
+        guild: interaction.guild.id,
+        name: interaction.guild.name,
+      });
+      await userData.save();
+    }
+
     const { cooldowns } = interaction.client;
 
     if (interaction.isChatInputCommand()) {
@@ -75,14 +83,6 @@ export default {
       const select = interaction;
       const interactionID = select.customId;
       const interactionValue = select.values[0];
-      //Restriccion de uso
-      if (userID != "725826170519552172") {
-        await interaction.reply({
-          content: `Acceso restringido para testers por ahora.`,
-          ephemeral: true,
-        });
-        return;
-      }
 
       switch (interactionID) {
         case "textModels":
@@ -93,6 +93,13 @@ export default {
           userData.textModel = interactionValue;
           break;
         case "imageModel":
+          if (interactionValue == "dall-e-3") {
+            await interaction.reply({
+              content: `> Only premium users can use DALL-E-3 model.`,
+              ephemeral: true,
+            });
+            break;
+          }
           await interaction.reply({
             content: `> Actualizando modelo de Imagenes a: **${interactionValue}**`,
             ephemeral: true,

@@ -1,11 +1,14 @@
-import imageModel from "../../modules/openai/imageModel.js";
-import { getUser } from "../../modules/conversations/conversationsHistory.js";
 import {
   SlashCommandBuilder,
   EmbedBuilder,
   AttachmentBuilder,
 } from "discord.js";
+import imageModel from "../../modules/openai/imageModel.js";
+import { getUser } from "../../modules/conversations/conversationsHistory.js";
 import axios from "axios";
+import modelUser from "../../modules/mongo/models/Users.js";
+
+const defaultReload = 6 * 60 * 60 * 1000;
 
 export default {
   data: new SlashCommandBuilder()
@@ -50,22 +53,13 @@ export default {
   async execute(interaction) {
     await interaction.deferReply();
     const userID = interaction.member.id;
-    const userName = interaction.member.displayName;
-    const date = interaction.createdAt;
     const prompt = interaction.options.getString("prompt");
+    const dbUserData = await modelUser.findOne({ id: userID });
+    const userModel = dbUserData.imageModel;
 
-    if (userID != "725826170519552172") {
-      return await interaction.editReply(
-        "> *Acceso limitado por el momento solo para testers*"
-      );
-    }
-
-    const userData = getUser(userID, userName);
-    const userModel = userData.ImageModel;
+    // TODO:Arreglar peticion de imagenes
 
     try {
-      console.log(`${date}\nImagen: ${userName} ${userID}\nprompt: ${prompt}`);
-
       let model = interaction.options.getString("model") || userModel;
       let size = interaction.options.getString("size") || "1024x1024";
       let quality = interaction.options.getString("quality") || "standard";
@@ -75,51 +69,79 @@ export default {
         (size == "1792x1024" || size == "1024x1792" || quality == "hd")
       ) {
         return await interaction.editReply(
-          "> *Este tamaño no esta disponible para este modelo*"
+          "> *Esta opcion no esta disponible para este modelo*"
+        );
+      }
+      if (model == "dall-e-3" && dbUserData.subscription == "free") {
+        return await interaction.editReply(
+          "> Only premium users can use DALL-E-3."
         );
       }
 
-      const response = await imageModel(prompt, model, size, quality);
+      try {
+        if (dbUserData.isWaiting) {
+          const currentTime = Date.now();
+          if (currentTime < dbUserData.reloadTime) {
+            const remainingTime = dbUserData.reloadTime - currentTime;
+            const hrs = Math.floor(remainingTime / (1000 * 60 * 60));
+            const min = Math.floor(
+              (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
+            );
 
-      if (response) {
-        try {
-          console.log("Descargando imagen");
-          const imageResponse = await axios.get(response, {
-            responseType: "arraybuffer",
-          });
-          const imageBuffer = Buffer.from(imageResponse.data, "binary");
-
-          const attachment = new AttachmentBuilder(imageBuffer, {
-            name: "imagen.png",
-          });
-
-          const exampleEmbed = new EmbedBuilder()
-            .setColor("White")
-            .setTitle("Image generation")
-            .addFields({ name: "Prompt:", value: `${prompt}` })
-            .addFields({ name: "Size:", value: `${size}` })
-            .setImage("attachment://imagen.png")
-            .setTimestamp()
-            .setFooter({
-              text: `Generated with ${model.toUpperCase()}`,
-              iconURL:
-                "https://msh-dv.github.io/tars-website/images/profile-picture.png",
-            });
-          await interaction.editReply({
-            embeds: [exampleEmbed],
-            files: [attachment],
-          });
-        } catch (error) {
-          console.error("Error Descargandola imagen:", err.message);
-          await interaction.editReply({
-            content: "> Hubo un error procesando la imagen",
-          });
+            const sec = Math.floor((remainingTime % (1000 * 60)) / 1000);
+            return `You must wait ${hrs} hrs, ${min} min, ${sec} sec before you can reload tokens.`;
+          } else {
+            dbUserData.tokens = 50000;
+            dbUserData.reloadTime = null;
+            dbUserData.isWaiting = false;
+            await dbUserData.save();
+          }
         }
-      } else {
-        await interaction.editReply("> Hubo un error procesando la imagen");
+
+        const response = await imageModel(prompt, model, size, quality);
+
+        if (dbUserData.tokens < 40000) {
+          dbUserData.tokens = 0;
+          dbUserData.isWaiting = true;
+          dbUserData.reloadTime = Date.now() + defaultReload;
+          await dbUserData.save();
+        }
+        dbUserData.tokens -= 30000;
+        await dbUserData.save();
+
+        const imageResponse = await axios.get(response, {
+          responseType: "arraybuffer",
+        });
+        const imageBuffer = Buffer.from(imageResponse.data, "binary");
+
+        const attachment = new AttachmentBuilder(imageBuffer, {
+          name: "imagen.png",
+        });
+
+        const exampleEmbed = new EmbedBuilder()
+          .setColor("White")
+          .setTitle("Image generation")
+          .addFields({ name: "Prompt:", value: `${prompt}` })
+          .addFields({ name: "Size:", value: `${size}` })
+          .setImage("attachment://imagen.png")
+          .setTimestamp()
+          .setFooter({
+            text: `Generated with ${model.toUpperCase()}`,
+            iconURL:
+              "https://msh-dv.github.io/tars-website/images/profile-picture.png",
+          });
+        await interaction.editReply({
+          embeds: [exampleEmbed],
+          files: [attachment],
+        });
+      } catch (error) {
+        console.error("Error Descargando la imagen:", error);
+        await interaction.editReply({
+          content: "> Hubo un error procesando la imagen",
+        });
       }
     } catch (err) {
-      console.error("Error de comando(Imagen):", err.message);
+      console.error("Error de comando(Imagen):", err);
       await interaction.editReply(
         "> *Your request was rejected as a result of our safety system. Your prompt may contain text that is not allowed by our safety system*"
       );

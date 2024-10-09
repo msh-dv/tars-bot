@@ -1,4 +1,4 @@
-import textReq from "../modules/openai/textModel.js";
+import textModel from "../modules/openai/textModel.js";
 import imageVision from "../modules/openai/imageVision.js";
 const prefix = "ts ";
 
@@ -81,7 +81,7 @@ export default {
         }
       } else {
         const finalCommand = `${referencedMessageContent} ${command}`.trim();
-        const textResponse = await textReq(userID, userName, finalCommand);
+        const textResponse = await textModel(userID, userName, finalCommand);
         if (textResponse) {
           await sendLongMessage(textResponse);
         } else {

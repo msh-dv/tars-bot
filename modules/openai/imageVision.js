@@ -32,6 +32,10 @@ async function textVision(
     return isThread ? threadModel : userModel;
   }
 
+  if (isThread) {
+    return "> Free users cannot send images to gpt-4o in threads.";
+  }
+
   const instance = await getInstance(isThread, id, name);
   const data = await getData(isThread, id, name);
   const model = getModel(isThread);
@@ -87,7 +91,7 @@ async function textVision(
       { $set: { dynamicHistory: backupHistory } }
     );
     console.error("Error de OpenAI (Imagen):", error.message);
-    return `> *Archivo corrupto o con exptension incorrecta.*`;
+    return `> *Archivo corrupto o con extension incorrecta.*`;
   }
 }
 
