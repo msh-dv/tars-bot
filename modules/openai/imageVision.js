@@ -41,6 +41,8 @@ async function textVision(
   const model = getModel(isThread);
   const backupHistory = [...instance.dynamicHistory];
 
+  // TODO: Agregar paquete mime-types para dejar de comparar con esta porqueria ._.
+
   const checkExt = (fileName) => {
     const ext = ["png", "jpeg", "jpg", "gif", "webp"];
     const file = fileName.split("?")[0];
@@ -61,7 +63,10 @@ async function textVision(
       role: "user",
       content: [
         { type: "text", text: message },
-        { type: "image_url", image_url: { url: `${attachment}` } },
+        {
+          type: "image_url",
+          image_url: { url: `${attachment}`, detail: "low" },
+        },
       ],
     });
 

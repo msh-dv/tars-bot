@@ -22,6 +22,8 @@ class Conversation {
   }
 
   async addMessage({ role, content }) {
+    console.log("midle: ", this.middleTermMemory);
+    console.log("short: ", this.dynamicHistory);
     this.dynamicHistory.push({ role, content });
     if (this.dynamicHistory.length > this.maxHistory) {
       const messageToSummarize = this.dynamicHistory.shift();
