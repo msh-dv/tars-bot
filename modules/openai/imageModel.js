@@ -24,7 +24,7 @@ async function imageModel(
 
     const dbUserData = await userModel.findOne({ id: userID });
 
-    let imageTokenCost = 66000;
+    let imageTokenCost = 40000;
 
     // Calcular el costo según DALL-E 3
     if (model === "dall-e-3") {
@@ -65,10 +65,6 @@ async function imageModel(
     }
 
     if (dbUserData.tokens < imageTokenCost) {
-      dbUserData.tokens = 0;
-      dbUserData.isWaiting = true;
-      dbUserData.reloadTime = Date.now() + defaultReload;
-      await dbUserData.save();
       return {
         error: true,
         message: "Insufficient tokens.",
@@ -86,7 +82,8 @@ async function imageModel(
 
     dbUserData.tokens -= imageTokenCost;
 
-    if (dbUserData.tokens < 30000) {
+    if (dbUserData.tokens < 100) {
+      dbUserData.tokens = 0;
       dbUserData.isWaiting = true;
       dbUserData.reloadTime = Date.now() + defaultReload;
     }

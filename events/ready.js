@@ -25,6 +25,5 @@ export default {
     setInterval(showGuildUsersCount, 600000);
 
     console.log(`Listo! logeado como: ${client.user.tag}`);
-    console.log(`Servidores: ${serverCount}, Usuarios: ${userCount}`);
   },
 };
