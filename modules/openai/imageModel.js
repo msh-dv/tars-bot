@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import moderation from "../moderation/moderation.js";
 import userModel from "../mongo/models/Users.js";
 import "dotenv/config";
+
 const openai = new OpenAI();
 const defaultReload = 6 * 60 * 60 * 1000;
 
@@ -21,8 +22,11 @@ async function imageModel(
       return false;
     }
 
+    const dbUserData = await userModel.findOne({ id: userID });
+
     let imageTokenCost = 66000;
 
+    // Calcular el costo según DALL-E 3
     if (model === "dall-e-3") {
       if (size === "1024x1024") {
         imageTokenCost = 132000; // DALL-E 3, tamaño normal
@@ -38,7 +42,6 @@ async function imageModel(
         }
       }
     }
-    const dbUserData = await userModel.findOne({ id: userID });
 
     if (dbUserData.isWaiting) {
       const currentTime = Date.now();
@@ -48,7 +51,6 @@ async function imageModel(
         const min = Math.floor(
           (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
         );
-
         const sec = Math.floor((remainingTime % (1000 * 60)) / 1000);
         return {
           error: true,
@@ -62,6 +64,18 @@ async function imageModel(
       }
     }
 
+    if (dbUserData.tokens < imageTokenCost) {
+      dbUserData.tokens = 0;
+      dbUserData.isWaiting = true;
+      dbUserData.reloadTime = Date.now() + defaultReload;
+      await dbUserData.save();
+      return {
+        error: true,
+        message: "Insufficient tokens.",
+      };
+    }
+
+    // Generar la imagen
     const image = await openai.images.generate({
       model: model,
       prompt: imgPrompt,
@@ -73,14 +87,13 @@ async function imageModel(
     dbUserData.tokens -= imageTokenCost;
 
     if (dbUserData.tokens < 30000) {
-      dbUserData.tokens = 0;
       dbUserData.isWaiting = true;
       dbUserData.reloadTime = Date.now() + defaultReload;
-      await dbUserData.save();
     }
 
     dbUserData.lastUse = new Date();
 
+    // Registrar el uso de tokens
     dbUserData.tokenUsageHistory.images.push({
       image: {
         date: new Date(),
