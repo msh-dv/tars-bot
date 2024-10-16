@@ -26,7 +26,11 @@ const userSchema = new mongoose.Schema({
   usedTokens: { type: Number, default: 0 },
   completionsCount: { type: Number, default: 0 },
   tokensMedia: { type: Number, default: 0 },
-  tokenUsageHistory: { type: Array, default: [] },
+  tokenUsageHistory: {
+    completions: { type: Array, default: [] },
+    images: { type: Array, default: [] },
+    audios: { type: Array, default: [] },
+  },
   lastUse: { type: Date },
   reloadTime: { type: Date, default: null },
   isBanned: { type: Boolean, default: false },

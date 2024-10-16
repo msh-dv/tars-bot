@@ -1,5 +1,6 @@
 import textReq from "../modules/openai/textModel.js";
 import imageVision from "../modules/openai/imageVision.js";
+import { getUser } from "../modules/conversations/conversationsHistory.js";
 import { isThreadInHistory } from "../modules/conversations/conversationsHistory.js";
 
 const recentMessages = new Map();
@@ -25,6 +26,7 @@ export default {
     )
       return;
 
+    getUser(userID, userName);
     const now = Date.now();
     const messageHistory = recentMessages.get(userID) || [];
     const recentMessagesCount = messageHistory.filter(

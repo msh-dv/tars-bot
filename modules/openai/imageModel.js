@@ -1,13 +1,16 @@
 import OpenAI from "openai";
 import moderation from "../moderation/moderation.js";
+import userModel from "../mongo/models/Users.js";
 import "dotenv/config";
 const openai = new OpenAI();
+const defaultReload = 6 * 60 * 60 * 1000;
 
 async function imageModel(
   imgPrompt,
   model = "dall-e-2",
   size = "1024x1024",
-  quality = "standard"
+  quality = "standard",
+  userID
 ) {
   try {
     const result = await moderation(imgPrompt);
@@ -18,6 +21,47 @@ async function imageModel(
       return false;
     }
 
+    let imageTokenCost = 66000;
+
+    if (model === "dall-e-3") {
+      if (size === "1024x1024") {
+        imageTokenCost = 132000; // DALL-E 3, tamaño normal
+      } else if (size === "1024×1792" || size === "1792×1024") {
+        imageTokenCost = 264000; // DALL-E 3, tamaño grande
+      }
+
+      if (quality === "hd") {
+        if (size === "1024x1024") {
+          imageTokenCost = 264000; // DALL-E 3, HD y tamaño normal
+        } else if (size === "1024×1792" || size === "1792×1024") {
+          imageTokenCost = 396000; // DALL-E 3, HD y tamaño grande
+        }
+      }
+    }
+    const dbUserData = await userModel.findOne({ id: userID });
+
+    if (dbUserData.isWaiting) {
+      const currentTime = Date.now();
+      if (currentTime < dbUserData.reloadTime) {
+        const remainingTime = dbUserData.reloadTime - currentTime;
+        const hrs = Math.floor(remainingTime / (1000 * 60 * 60));
+        const min = Math.floor(
+          (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
+        );
+
+        const sec = Math.floor((remainingTime % (1000 * 60)) / 1000);
+        return {
+          error: true,
+          message: `You must wait ${hrs} hrs, ${min} min, ${sec} sec before you can reload tokens.`,
+        };
+      } else {
+        dbUserData.tokens = 50000;
+        dbUserData.reloadTime = null;
+        dbUserData.isWaiting = false;
+        await dbUserData.save();
+      }
+    }
+
     const image = await openai.images.generate({
       model: model,
       prompt: imgPrompt,
@@ -25,6 +69,31 @@ async function imageModel(
       size: size,
       quality: quality,
     });
+
+    dbUserData.tokens -= imageTokenCost;
+
+    if (dbUserData.tokens < 30000) {
+      dbUserData.tokens = 0;
+      dbUserData.isWaiting = true;
+      dbUserData.reloadTime = Date.now() + defaultReload;
+      await dbUserData.save();
+    }
+
+    dbUserData.lastUse = new Date();
+
+    dbUserData.tokenUsageHistory.images.push({
+      image: {
+        date: new Date(),
+        prompt: imgPrompt,
+        model: model,
+        size: size,
+        quality: quality,
+        output_tokens: imageTokenCost,
+        content: image.data[0].url,
+      },
+    });
+
+    await dbUserData.save();
 
     return image.data[0].url;
   } catch (error) {

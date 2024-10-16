@@ -1,10 +1,11 @@
 // Esquema de creacion de hilos en mongodb
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const threadSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   name: { type: String, required: true },
+  author: { type: String, default: "anon" },
   textModel: { type: String, default: "gpt-4o-mini" },
   instructions: {
     type: String,

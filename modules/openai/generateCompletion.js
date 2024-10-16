@@ -51,7 +51,7 @@ async function generateCompletion(
       max_completion_tokens: max_tokens,
     });
 
-    userData.lastUse = Date.now();
+    userData.lastUse = new Date();
 
     const completionText = completion.choices[0].message.content;
 
@@ -65,12 +65,12 @@ async function generateCompletion(
     userData.completionsCount++;
     userData.tokensMedia = userData.usedTokens / userData.completionsCount;
 
-    userData.tokenUsageHistory.push({
+    userData.tokenUsageHistory.completions.push({
       completion: {
         num: userData.completionsCount,
         date: new Date(),
         input_tokens: tarsIn,
-        outputTokens: tarsOut,
+        output_tokens: tarsOut,
         total_tokens: tarsTotal,
         content: completionText,
       },

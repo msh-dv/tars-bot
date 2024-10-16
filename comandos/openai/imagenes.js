@@ -8,8 +8,6 @@ import { getUser } from "../../modules/conversations/conversationsHistory.js";
 import axios from "axios";
 import modelUser from "../../modules/mongo/models/Users.js";
 
-const defaultReload = 6 * 60 * 60 * 1000;
-
 export default {
   data: new SlashCommandBuilder()
     .setName("imagine")
@@ -53,6 +51,8 @@ export default {
   async execute(interaction) {
     await interaction.deferReply();
     const userID = interaction.member.id;
+    const userName = interaction.member.displayName;
+    getUser(userID, userName);
     const prompt = interaction.options.getString("prompt");
     const dbUserData = await modelUser.findOne({ id: userID });
     const userModel = dbUserData.imageModel;
@@ -79,35 +79,18 @@ export default {
       }
 
       try {
-        if (dbUserData.isWaiting) {
-          const currentTime = Date.now();
-          if (currentTime < dbUserData.reloadTime) {
-            const remainingTime = dbUserData.reloadTime - currentTime;
-            const hrs = Math.floor(remainingTime / (1000 * 60 * 60));
-            const min = Math.floor(
-              (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
-            );
+        const response = await imageModel(
+          prompt,
+          model,
+          size,
+          quality,
+          userID,
+          userName
+        );
 
-            const sec = Math.floor((remainingTime % (1000 * 60)) / 1000);
-            return `You must wait ${hrs} hrs, ${min} min, ${sec} sec before you can reload tokens.`;
-          } else {
-            dbUserData.tokens = 50000;
-            dbUserData.reloadTime = null;
-            dbUserData.isWaiting = false;
-            await dbUserData.save();
-          }
+        if (response.error) {
+          return await interaction.editReply(response.message);
         }
-
-        const response = await imageModel(prompt, model, size, quality);
-
-        if (dbUserData.tokens < 40000) {
-          dbUserData.tokens = 0;
-          dbUserData.isWaiting = true;
-          dbUserData.reloadTime = Date.now() + defaultReload;
-          await dbUserData.save();
-        }
-        dbUserData.tokens -= 30000;
-        await dbUserData.save();
 
         const imageResponse = await axios.get(response, {
           responseType: "arraybuffer",
@@ -123,6 +106,7 @@ export default {
           .setTitle("Image generation")
           .addFields({ name: "Prompt:", value: `${prompt}` })
           .addFields({ name: "Size:", value: `${size}` })
+          .addFields({ name: "Quality:", value: `${quality}` })
           .setImage("attachment://imagen.png")
           .setTimestamp()
           .setFooter({
