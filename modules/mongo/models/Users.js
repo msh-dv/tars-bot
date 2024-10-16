@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   guilds: { type: Array, default: [] },
+  userProfile: { type: String, default: "" },
   tokens: { type: Number, default: 50000 },
   subscription: {
     type: String,
@@ -25,6 +26,7 @@ const userSchema = new mongoose.Schema({
   usedTokens: { type: Number, default: 0 },
   completionsCount: { type: Number, default: 0 },
   tokensMedia: { type: Number, default: 0 },
+  tokenUsageHistory: { type: Array, default: [] },
   lastUse: { type: Date },
   reloadTime: { type: Date, default: null },
   isBanned: { type: Boolean, default: false },
