@@ -1,7 +1,7 @@
-const { SlashCommandBuilder, bold } = require("discord.js");
-const { EmbedBuilder } = require("discord.js");
+import { SlashCommandBuilder, bold } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("userinfo")
     .setDescription("Muestra informacion del usuario."),

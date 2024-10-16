@@ -1,13 +1,7 @@
-const {
-  SlashCommandBuilder,
-  ThreadAutoArchiveDuration,
-} = require("discord.js");
+import { SlashCommandBuilder, ThreadAutoArchiveDuration } from "discord.js";
+import { createThread } from "../../modules/conversations/conversationsHistory.js";
 
-const {
-  createThread,
-} = require("../../modules/conversations/conversationsHistory");
-
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("topic")
     .setDescription(

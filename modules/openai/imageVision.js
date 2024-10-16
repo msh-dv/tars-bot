@@ -1,8 +1,17 @@
-const { getUser, getThread } = require("../conversations/conversationsHistory");
-const generateCompletion = require("./generateCompletion");
-const moderation = require("../moderation/moderation");
+import { getUser, getThread } from "../conversations/conversationsHistory.js";
+import generateCompletion from "./generateCompletion.js";
+import userModel from "../mongo/models/Users.js";
+import threadModel from "../mongo/models/Threads.js";
+import moderation from "../moderation/moderation.js";
 
-async function textVision(id, name, message, attachment, isThread = false) {
+async function textVision(
+  id,
+  name,
+  message,
+  attachment,
+  isThread = false,
+  userID
+) {
   function getInstance(isThread, id, name) {
     if (isThread) {
       return getThread(id, name);
@@ -10,8 +19,29 @@ async function textVision(id, name, message, attachment, isThread = false) {
       return getUser(id, name);
     }
   }
-  const instance = getInstance(isThread, id, name);
+
+  function getData(isThread, id) {
+    if (isThread) {
+      return threadModel.findOne({ id: id });
+    } else {
+      return userModel.findOne({ id: id });
+    }
+  }
+
+  function getModel(isThread) {
+    return isThread ? threadModel : userModel;
+  }
+
+  if (isThread) {
+    return "> Free users cannot send images to gpt-4o in threads.";
+  }
+
+  const instance = await getInstance(isThread, id, name);
+  const data = await getData(isThread, id, name);
+  const model = getModel(isThread);
   const backupHistory = [...instance.dynamicHistory];
+
+  // TODO: Agregar paquete mime-types para dejar de comparar con esta porqueria ._.
 
   const checkExt = (fileName) => {
     const ext = ["png", "jpeg", "jpg", "gif", "webp"];
@@ -33,21 +63,41 @@ async function textVision(id, name, message, attachment, isThread = false) {
       role: "user",
       content: [
         { type: "text", text: message },
-        { type: "image_url", image_url: { url: `${attachment}` } },
+        {
+          type: "image_url",
+          image_url: { url: `${attachment}`, detail: "low" },
+        },
       ],
     });
 
     const history = instance.getFullHistory();
-    const response = await generateCompletion(history, instance.TextModel);
+    const response = await generateCompletion(
+      id,
+      history,
+      data.textModel,
+      null,
+      isThread,
+      userID
+    );
 
     instance.addMessage({ role: "assistant", content: response });
+
+    await model.updateOne(
+      { id: id },
+      { $set: { dynamicHistory: instance.dynamicHistory } }
+    );
+
     return response;
   } catch (error) {
-    console.error("Error de OpenAI (Imagen):", error.message);
     instance.dynamicHistory = backupHistory;
-    console.log("Restaurando historial.");
-    return `> *Archivo corrupto o con exptension incorrecta.*`;
+
+    await model.updateOne(
+      { id: id },
+      { $set: { dynamicHistory: backupHistory } }
+    );
+    console.error("Error de OpenAI (Imagen):", error.message);
+    return `> *Archivo corrupto o con extension incorrecta.*`;
   }
 }
 
-module.exports = textVision;
+export default textVision;

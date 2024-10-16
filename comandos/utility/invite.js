@@ -1,7 +1,7 @@
-const { SlashCommandBuilder } = require("discord.js");
-const { EmbedBuilder } = require("discord.js");
+import { SlashCommandBuilder } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("invite")
     .setDescription("Muestra un link para invitar al bot a tu servidor."),

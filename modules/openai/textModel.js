@@ -1,8 +1,10 @@
-const { getUser, getThread } = require("../conversations/conversationsHistory");
-const generateCompletion = require("./generateCompletion");
-const moderation = require("../moderation/moderation");
+import { getUser, getThread } from "../conversations/conversationsHistory.js";
+import userModel from "../mongo/models/Users.js";
+import threadModel from "../mongo/models/Threads.js";
+import generateCompletion from "./generateCompletion.js";
+import moderation from "../moderation/moderation.js";
 
-async function textModel(id, name, message, isThread = false) {
+async function textModel(id, name, message, isThread = false, userID) {
   function getInstance(isThread, id, name) {
     if (isThread) {
       return getThread(id, name);
@@ -11,7 +13,21 @@ async function textModel(id, name, message, isThread = false) {
     }
   }
 
-  const instance = getInstance(isThread, id, name);
+  function getData(isThread, id) {
+    if (isThread) {
+      return threadModel.findOne({ id: id });
+    } else {
+      return userModel.findOne({ id: id });
+    }
+  }
+
+  function getModel(isThread) {
+    return isThread ? threadModel : userModel;
+  }
+
+  const instance = await getInstance(isThread, id, name);
+  const data = await getData(isThread, id, name);
+  const model = getModel(isThread);
   const backupHistory = [...instance.dynamicHistory];
 
   try {
@@ -22,16 +38,33 @@ async function textModel(id, name, message, isThread = false) {
     instance.addMessage({ role: "user", content: message });
 
     const history = instance.getFullHistory();
-    const response = await generateCompletion(history, instance.TextModel);
+    const response = await generateCompletion(
+      id,
+      history,
+      data.textModel,
+      null,
+      isThread,
+      userID
+    );
 
     instance.addMessage({ role: "assistant", content: response });
+
+    await model.updateOne(
+      { id: id },
+      { $set: { dynamicHistory: instance.dynamicHistory } }
+    );
+
     return response;
   } catch (error) {
-    console.error("Error de OpenAI (Texto):", error.message);
     instance.dynamicHistory = backupHistory;
-    console.log("Restaurando historial.");
+
+    await model.updateOne(
+      { id: id },
+      { $set: { dynamicHistory: backupHistory } }
+    );
+    console.error("Error de OpenAI (Texto):", error);
     return `> *Error procesando tu solicitud. Por favor, intenta de nuevo más tarde.*`;
   }
 }
 
-module.exports = textModel;
+export default textModel;

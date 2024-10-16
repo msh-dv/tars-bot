@@ -1,8 +1,8 @@
-const textReq = require("../modules/openai/textModel");
-const imageVision = require("../modules/openai/imageVision");
+import textModel from "../modules/openai/textModel.js";
+import imageVision from "../modules/openai/imageVision.js";
 const prefix = "ts ";
 
-module.exports = {
+export default {
   name: "messageCreate",
   once: false,
   async execute(message) {
@@ -29,7 +29,7 @@ module.exports = {
     const handleError = (err) => {
       console.error(
         `Error de comando (prefijo) ${createdAt} : ${userName} : ${userID} : ${content}`,
-        err.message
+        err
       );
       message.reply("> *Hubo un error ejecutando este comando.*");
     };
@@ -52,11 +52,10 @@ module.exports = {
     }
 
     try {
-
       await channel.sendTyping();
 
       if (referencedAttachmentUrl) {
-        const finalCommand = `${referencedMessageContent} ${command}`.trim();
+        const finalCommand = `${referencedMessageContent}  ${command}`.trim();
         const imgResponse = await imageVision(
           userID,
           userName,
@@ -82,7 +81,7 @@ module.exports = {
         }
       } else {
         const finalCommand = `${referencedMessageContent} ${command}`.trim();
-        const textResponse = await textReq(userID, userName, finalCommand);
+        const textResponse = await textModel(userID, userName, finalCommand);
         if (textResponse) {
           await sendLongMessage(textResponse);
         } else {

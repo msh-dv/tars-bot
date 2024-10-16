@@ -1,7 +1,7 @@
 // Informacion sobre comandos
-const { SlashCommandBuilder, EmbedBuilder, bold } = require("discord.js");
+import { SlashCommandBuilder, EmbedBuilder, bold } from "discord.js";
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("help")
     .setDescription("Muestra informacion de ayuda."),

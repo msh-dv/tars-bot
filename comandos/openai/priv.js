@@ -1,10 +1,11 @@
 //Comando para llamadas al modelo de texto privadas, incluyendo una imagen opcional
 
-const textReq = require("../../modules/openai/textModel");
-const imageVision = require("../../modules/openai/imageVision");
-const { SlashCommandBuilder } = require("discord.js");
+import textReq from "../../modules/openai/textModel.js";
 
-module.exports = {
+import imageVision from "../../modules/openai/imageVision.js";
+import { SlashCommandBuilder } from "discord.js";
+
+export default {
   data: new SlashCommandBuilder()
     .setName("priv")
     .setDescription("Envia un mensaje privado a ChatGPT")

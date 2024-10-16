@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "test": "echo none",
+    "test": "jest",
     "start": "node --no-deprecation main.js"
   },
   "keywords": [],
+  "type": "module",
   "author": "msh",
   "license": "ISC",
   "description": "",
@@ -15,6 +16,8 @@
     "axios": "^1.7.7",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
+    "jest": "^29.7.0",
+    "mongoose": "^8.6.3",
     "openai": "^4.52.5",
     "uuid": "^10.0.0",
     "winston": "^3.14.2"

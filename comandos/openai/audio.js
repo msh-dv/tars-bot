@@ -1,9 +1,11 @@
-const audioReq = require("../../modules/openai/audioModel");
-const { v4: uuidv4 } = require("uuid");
-const fs = require("fs");
-const { SlashCommandBuilder } = require("discord.js");
+import audioReq from "../../modules/openai/audioModel.js";
+import { getUser } from "../../modules/conversations/conversationsHistory.js";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
+import { SlashCommandBuilder } from "discord.js";
+import { get } from "mongoose";
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("say")
     .setDescription("Convierte tu texto en un audio.")
@@ -11,15 +13,15 @@ module.exports = {
       option
         .setName("prompt")
         .setDescription("Mensaje a convertir en audio.")
-        .setMaxLength(4_50)
+        .setMaxLength(2_000)
         .setRequired(true)
     )
     .addStringOption((option) =>
       option
         .setName("model")
         .setDescription("Modelo de audio.")
-        .addChoices({ name: "tts-1", value: "tts-1" })
-        .addChoices({ name: "tts-1-hd", value: "tts-1-hd" })
+        .addChoices({ name: "TTS-1", value: "tts-1" })
+        .addChoices({ name: "TTS-1-HD", value: "tts-1-hd" })
     )
     .addStringOption((option) =>
       option
@@ -40,20 +42,27 @@ module.exports = {
     const mensaje = interaction.options.getString("prompt");
     const userID = inte.member.id;
     const userName = inte.member.displayName;
-    const date = inte.createdAt;
     let model = interaction.options.getString("model") || "tts-1";
     let voice = interaction.options.getString("voice") || "nova";
-    console.log(`${date}\nAudio: ${userName} ${userID}\nmsg: ${mensaje}`);
+    getUser(userID, userName);
+
+    if (model == "tts-1-hd") {
+      await interaction.editReply("> Only premium users can use TTS-1-HD");
+    }
 
     try {
-      const response = await audioReq(model, voice, mensaje);
+      const response = await audioReq(model, voice, mensaje, userID);
+
+      if (response.error) {
+        await interaction.editReply(response.message);
+        return;
+      }
 
       if (response) {
         await interaction.editReply({
-          files: [{ attachment: response, name: `audio_${uuidv4()}.mp3` }],
+          files: [{ attachment: response, name: `tars_audio_${uuidv4()}.mp3` }],
         });
 
-        console.log(`Eliminando: ${response}`);
         fs.promises.unlink(response);
       } else {
         await interaction.editReply(
@@ -61,8 +70,8 @@ module.exports = {
         );
       }
     } catch (err) {
-      console.error("Error de comando ( audio )", err.message);
-      await interaction.editReply(`> *Hubo un erro ejecutando este comando*`);
+      console.error("Error de comando ( audio )", err);
+      await interaction.editReply(`> *Hubo un error ejecutando este comando*`);
     }
   },
 };

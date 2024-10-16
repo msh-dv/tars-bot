@@ -1,14 +1,13 @@
-const textReq = require("../modules/openai/textModel");
-const imageVision = require("../modules/openai/imageVision");
-const {
-  isThreadInHistory,
-} = require("../modules/conversations/conversationsHistory");
+import textReq from "../modules/openai/textModel.js";
+import imageVision from "../modules/openai/imageVision.js";
+import { getUser } from "../modules/conversations/conversationsHistory.js";
+import { isThreadInHistory } from "../modules/conversations/conversationsHistory.js";
 
 const recentMessages = new Map();
 const TIME_FRAME = 1000;
 const MAX_MESSAGES = 2;
 
-module.exports = {
+export default {
   name: "messageCreate",
   once: false,
   async execute(message) {
@@ -27,6 +26,7 @@ module.exports = {
     )
       return;
 
+    getUser(userID, userName);
     const now = Date.now();
     const messageHistory = recentMessages.get(userID) || [];
     const recentMessagesCount = messageHistory.filter(
@@ -84,7 +84,8 @@ module.exports = {
           userID,
           userName,
           finalCommand,
-          referencedAttachmentUrl
+          referencedAttachmentUrl,
+          userID
         );
         if (imgResponse) {
           await sendLongMessage(imgResponse);
@@ -97,7 +98,8 @@ module.exports = {
           threadName,
           command,
           attachment.url,
-          true
+          true,
+          userID
         );
         imgResponse
           ? await sendLongMessage(imgResponse)
@@ -111,7 +113,8 @@ module.exports = {
           threadID,
           threadName,
           usernameCommand,
-          true
+          true,
+          userID
         );
         textResponse
           ? await sendLongMessage(textResponse)

@@ -1,4 +1,4 @@
-const {
+import {
   bold,
   ActionRowBuilder,
   StringSelectMenuBuilder,
@@ -6,94 +6,96 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   codeBlock,
-} = require("discord.js");
-const { getUser } = require("../../modules/conversations/conversationsHistory");
+} from "discord.js";
 
-module.exports = {
+import userModel from "../../modules/mongo/models/Users.js";
+import { getUser } from "../../modules/conversations/conversationsHistory.js";
+
+export default {
   data: new SlashCommandBuilder()
-    .setName("modelos")
+    .setName("models")
     .setDescription(
-      "Personaliza los modelos por defecto para texto, imagenes y audio."
+      "Customize the default models for text, images, and audio."
     ),
   async execute(interaction) {
     const userName = interaction.member.displayName || "anon";
     const userID = interaction.member.id || "none";
 
-    const userData = getUser(userID, userName);
+    await getUser(userID, userName);
+
+    const userData = await userModel.findOne({ id: userID });
 
     const embed = new EmbedBuilder()
       .setColor("White")
-      .setTitle("Modelos del usuario:")
+      .setTitle("User models:")
       .setDescription(`${userName} (${userID})`)
       .setThumbnail(interaction.user.avatarURL())
       .addFields(
         {
-          name: bold("Texto:"),
-          value: codeBlock(`${userData.TextModel}`),
+          name: bold("Text:"),
+          value: codeBlock(`${userData.textModel}`),
         },
         {
-          name: bold("Imagenes:"),
-          value: codeBlock(`${userData.ImageModel}`),
+          name: bold("Images:"),
+          value: codeBlock(`${userData.imageModel}`),
         },
         {
           name: bold("Audio:"),
-          value: codeBlock(`${userData.AudioModel}`),
+          value: codeBlock(`${userData.audioModel}`),
         }
       )
       .setTimestamp();
 
     const textSelector = new StringSelectMenuBuilder()
       .setCustomId("textModels")
-      .setPlaceholder("Texto")
+      .setPlaceholder("Text model")
       .addOptions(
         new StringSelectMenuOptionBuilder()
           .setLabel("GPT-4o-mini")
-          .setDescription("Modelo más accesible para tareas rápidas y ligeras.")
+          .setDescription("More accessible model for quick and light tasks.")
           .setValue("gpt-4o-mini"),
         new StringSelectMenuOptionBuilder()
           .setLabel("GPT-4o")
-          .setDescription(
-            "Modelo más inteligente, ideal para tareas complejas."
-          )
+          .setDescription("Smarter model, ideal for complex tasks.")
           .setValue("gpt-4o"),
         new StringSelectMenuOptionBuilder()
           .setLabel("GPT-4-Turbo")
-          .setDescription("Modelo más inteligente anterior a GPT-4o.")
+          .setDescription("The previous smarter model before GPT-4o.")
           .setValue("gpt-4-turbo"),
         new StringSelectMenuOptionBuilder()
           .setLabel("GPT-3.5-Turbo")
-          .setDescription("Modelo rápido y económico para tareas sencillas.")
+          .setDescription("Fast and cost-effective model for simple tasks.")
           .setValue("gpt-3.5-turbo")
       );
 
     const imageSelector = new StringSelectMenuBuilder()
       .setCustomId("imageModel")
-      .setPlaceholder("Imagenes")
+      .setPlaceholder("Image model")
       .addOptions(
         new StringSelectMenuOptionBuilder()
           .setLabel("DALL-E-2")
           .setDescription(
-            "Modelo de generación de imagenes realistas y precisas."
+            "Image generation model for realistic and accurate images."
           )
           .setValue("dall-e-2"),
         new StringSelectMenuOptionBuilder()
           .setLabel("DALL-E-3")
           .setDescription(
-            "Ultimo modelo de generación de imagenes de DALL-E, imagenes más realistas y mejor resolución."
+            "Latest DALL-E image generation model, more realistic images and better resolution."
           )
           .setValue("dall-e-3")
       );
     const audioSelector = new StringSelectMenuBuilder()
       .setCustomId("audioModel")
-      .setPlaceholder("Audio")
+      .setPlaceholder("Audio model")
       .addOptions(
         new StringSelectMenuOptionBuilder()
           .setLabel("TTS-1")
-          .setDescription("Modelo de texto a voz, más rápido.")
+          .setDescription("Text-to-speech model, faster.")
           .setValue("tts-1"),
         new StringSelectMenuOptionBuilder()
           .setLabel("TTS-1-HD")
-          .setDescription("Modelo de texto a voz, mayor calidad de audio.")
+          .setDescription("Text-to-speech model, higher audio quality.")
           .setValue("tts-1-hd")
       );
 
@@ -102,7 +104,7 @@ module.exports = {
     const audioModel = new ActionRowBuilder().addComponents(audioSelector);
 
     await interaction.reply({
-      content: "## Configuración de modelos:",
+      content: "## Default models config:",
       embeds: [embed],
       components: [textModel, imageModel, audioModel],
       ephemeral: true,
