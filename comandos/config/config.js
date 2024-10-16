@@ -49,7 +49,7 @@ export default {
         },
         {
           name: bold("Tokens:"),
-          value: `${userData.tokens}`,
+          value: `${userData.tokens.toLocaleString()}`,
         }
       )
       .setTimestamp();

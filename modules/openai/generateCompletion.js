@@ -51,12 +51,11 @@ async function generateCompletion(
       max_completion_tokens: max_tokens,
     });
 
+    userData.lastUse = Date.now();
+
     const completionText = completion.choices[0].message.content;
 
     const usage = completion.usage;
-    const inputTokens = usage.prompt_tokens;
-    const outputTokens = usage.completion_tokens;
-    const totalTokens = usage.total_tokens;
 
     const tarsIn = usage.prompt_tokens;
     const tarsOut = usage.completion_tokens * 4;
@@ -66,20 +65,16 @@ async function generateCompletion(
     userData.completionsCount++;
     userData.tokensMedia = userData.usedTokens / userData.completionsCount;
 
-    console.log(
-      `Real:\nModel: ${model}\nInput: ${inputTokens}\nOutput: ${outputTokens}\n Total: ${totalTokens}`
-    );
-    console.log();
-    console.log(
-      `TARS:\nModel: ${model}\nInput: ${tarsIn}\nOutput: ${tarsOut}\n Total: ${tarsTotal}`
-    );
-    console.log();
-
-    console.log(
-      `Used tokens: ${userData.usedTokens}\nCompletions: ${
-        userData.completionsCount
-      }\nMedia:${userData.usedTokens / userData.completionsCount}`
-    );
+    userData.tokenUsageHistory.push({
+      completion: {
+        num: userData.completionsCount,
+        date: new Date(),
+        input_tokens: tarsIn,
+        outputTokens: tarsOut,
+        total_tokens: tarsTotal,
+        content: completionText,
+      },
+    });
 
     if (userData.tokens < tarsTotal) {
       userData.tokens = 0;
