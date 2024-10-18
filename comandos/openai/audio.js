@@ -3,7 +3,6 @@ import { getUser } from "../../modules/conversations/conversationsHistory.js";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import { SlashCommandBuilder } from "discord.js";
-import { get } from "mongoose";
 
 export default {
   data: new SlashCommandBuilder()

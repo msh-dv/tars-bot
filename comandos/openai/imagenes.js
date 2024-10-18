@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   SlashCommandBuilder,
   EmbedBuilder,
@@ -5,7 +6,6 @@ import {
 } from "discord.js";
 import imageModel from "../../modules/openai/imageModel.js";
 import { getUser } from "../../modules/conversations/conversationsHistory.js";
-import axios from "axios";
 import modelUser from "../../modules/mongo/models/Users.js";
 
 export default {

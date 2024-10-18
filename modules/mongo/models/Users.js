@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
     audios: { type: Array, default: [] },
   },
   lastUse: { type: Date },
+  lastAnalized: { type: Array, default: [] },
   reloadTime: { type: Date, default: null },
   isBanned: { type: Boolean, default: false },
   isWaiting: { type: Boolean, default: false },

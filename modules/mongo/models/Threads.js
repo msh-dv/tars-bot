@@ -14,6 +14,7 @@ const threadSchema = new mongoose.Schema({
   },
   dynamicHistory: { type: Array, default: [] },
   maxHistory: { type: Number, default: 6 },
+  lastAnalized: { type: Array, default: [] },
 });
 
 const Thread = mongoose.model("Thread", threadSchema);

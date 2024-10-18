@@ -56,11 +56,10 @@ async function textModel(id, name, message, isThread = false, userID) {
 
     return response;
   } catch (error) {
-    instance.dynamicHistory = backupHistory;
-
+    instance.wipeMemory();
     await model.updateOne(
       { id: id },
-      { $set: { dynamicHistory: backupHistory } }
+      { $set: { dynamicHistory: instance.dynamicHistory } }
     );
     console.error("Error de OpenAI (Texto):", error);
     return `> *Error procesando tu solicitud. Por favor, intenta de nuevo más tarde.*`;

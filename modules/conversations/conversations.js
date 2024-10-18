@@ -22,8 +22,8 @@ class Conversation {
   }
 
   async addMessage({ role, content }) {
-    console.log("midle: ", this.middleTermMemory);
-    console.log("short: ", this.dynamicHistory);
+    console.log(this.dynamicHistory.length);
+    console.log(this.middleTermMemory);
     this.dynamicHistory.push({ role, content });
     if (this.dynamicHistory.length > this.maxHistory) {
       const messageToSummarize = this.dynamicHistory.shift();
@@ -64,6 +64,7 @@ class Conversation {
       { role: "system", content: `The user name is ${this.name}` },
     ];
     this.dynamicHistory = [];
+    this.middleTermMemory = [];
   }
 
   setNewInstructions(newInstructions) {

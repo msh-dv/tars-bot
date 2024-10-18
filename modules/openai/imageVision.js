@@ -32,16 +32,17 @@ async function textVision(
     return isThread ? threadModel : userModel;
   }
 
-  if (isThread) {
-    return "> Free users cannot send images to gpt-4o in threads.";
-  }
+  // Limitacion para envio de imagenes en hilos
+  // if (isThread) {
+  //   return "> Free users cannot send images to gpt-4o in threads.";
+  // }
 
   const instance = await getInstance(isThread, id, name);
   const data = await getData(isThread, id, name);
   const model = getModel(isThread);
   const backupHistory = [...instance.dynamicHistory];
 
-  // TODO: Agregar paquete mime-types para dejar de comparar con esta porqueria ._.
+  // TODO: Agregar paquete mime-types para dejar de usar esta porqueria ._.
 
   const checkExt = (fileName) => {
     const ext = ["png", "jpeg", "jpg", "gif", "webp"];
@@ -89,11 +90,12 @@ async function textVision(
 
     return response;
   } catch (error) {
-    instance.dynamicHistory = backupHistory;
+    // TODO: Arreglar error de urls caducadas
+    instance.wipeMemory();
 
     await model.updateOne(
       { id: id },
-      { $set: { dynamicHistory: backupHistory } }
+      { $set: { dynamicHistory: instance.dynamicHistory } }
     );
     console.error("Error de OpenAI (Imagen):", error.message);
     return `> *Archivo corrupto o con extension incorrecta.*`;
